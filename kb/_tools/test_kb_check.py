@@ -341,6 +341,17 @@ date: 2026-11-03
         self.assertHasError(report, "No%20file.png")
         self.assertHasError(report, "Also missing.png")
 
+    def test_query_strings_on_links_are_ignored(self):
+        self.write("kb/assets/login-flow.png", "x")
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "![a](../assets/login-flow.png?raw=true) "
+                     "![b](../assets/login-flow.png?raw=true#top) "
+                     "![c](../assets/missing.png?raw=true)\n")
+        report = self.run_check()
+        self.assertEqual(len(report.errors), 1, report.errors)
+        self.assertHasError(report, "missing.png?raw=true")
+
     def test_asset_names_with_spaces_or_underscores_are_warned(self):
         self.write("kb/assets/Login flow.png", "x")
         self.write("kb/assets/login_flow.png", "x")

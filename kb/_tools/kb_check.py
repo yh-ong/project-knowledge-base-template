@@ -278,7 +278,8 @@ def check(root, today, allow_placeholders):
                 target = target.strip("<>")
                 if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("#"):
                     continue  # external URL, mailto, or in-page anchor
-                target_path = unquote(target.split("#", 1)[0])   # %20 → space
+                # Drop #fragment and ?query first, then decode (%20 → space).
+                target_path = unquote(re.split(r"[?#]", target, maxsplit=1)[0])
                 if not target_path:
                     continue
                 if not (path.parent / target_path).resolve().exists():
