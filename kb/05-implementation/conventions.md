@@ -29,7 +29,7 @@ Day-to-day commands (install, run, test, lint) are canonical in [`AGENTS.md §3`
 ## 3. Code conventions
 <!-- Only what a linter does NOT already enforce. Each rule with a one-line reason. -->
 - **Structure:** e.g. feature folders, layering rules (UI → service → repo; never skip).
-- **Naming:**
+- **Naming:** … Asset files (images, icons, fonts, exports) use lowercase words separated by hyphens — `login-flow.png`, not `Login flow.png`, `login_flow.png`, or `loginflow.png`.
 - **Errors:** how to raise, wrap, and surface errors.
 - **Logging:** what to log, what never to log (PII, secrets).
 - **Config:** read via `…`, never `process.env` directly in business code.

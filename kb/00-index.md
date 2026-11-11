@@ -40,6 +40,11 @@ last_reviewed: YYYY-MM-DD
 - **Visual design values** (colours, spacing, type) → the design tokens in code; **screens** → the design files. `design-system.md` links to both.
 - **API contracts** → the machine-readable files (OpenAPI / protobuf / event schemas). Their location is recorded once, in [architecture overview §4](04-architecture/overview.md); other docs link to them.
 
+## File naming
+
+- **Docs with IDs:** `<ID>-<slug>.md`, e.g. `REQ-018-guest-checkout.md`.
+- **Assets** (screenshots, diagrams, exported designs): put them in `kb/assets/` and name them in lowercase words separated by hyphens — `login-flow-empty-state.png`. Not spaces (`Login flow.png`), not underscores (`login_flow.png`), and not run together (`loginflow.png`). Hyphenated names need no escaping in links and read the same everywhere. The KB check warns about spaces and underscores.
+
 ## Front-matter
 
 Every doc has `title`, `owner` (a person, not a team), `status`, `last_reviewed`. Docs with IDs also have `id`; most have `links`.

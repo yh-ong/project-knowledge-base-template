@@ -9,6 +9,7 @@ Checks the KB (AGENTS.md + kb/) for the rules in kb/00-index.md:
              reference-style), REQ index out of sync or malformed, unfilled
              placeholders, no runnable command in the AGENTS.md commands block
   warnings — docs past their freshness window, file name not matching its ID,
+             asset file names with spaces or underscores,
              REQ files missing from the index
 
 A line containing `<!-- kb-check: ignore -->` is skipped by the placeholder check
@@ -28,6 +29,7 @@ import argparse
 import datetime as dt
 import re
 import sys
+from urllib.parse import unquote
 from pathlib import Path
 
 # ---------------------------------------------------------------- rules ----
@@ -75,7 +77,7 @@ FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,}).*?(?:^ {0,3}\1[`~]*[ \t]*$|\Z)", re
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 LINK_RE = re.compile(r"\[[^\]]*\]\(\s*(<[^>\n]*>|[^)\s]+)(?:\s+\"[^\"]*\")?\s*\)")
-REF_DEF_RE = re.compile(r"^ {0,3}\[[^\]]+\]:\s*<?([^\s>]+)>?")   # [label]: target
+REF_DEF_RE = re.compile(r"^ {0,3}\[[^\]]+\]:\s*(<[^>\n]*>|\S+)")   # [label]: target
 IGNORE_MARK = "kb-check: ignore"
 
 
@@ -186,6 +188,13 @@ def check(root, today, allow_placeholders):
     link_files = files + ([agents] if agents.exists() else [])
     placeholder_files = [p for p in link_files if not p.name.startswith("_template-")]
 
+    # --- asset file names: hyphens, not spaces or underscores ----------------------
+    for path in sorted(kb.rglob("*")):
+        if (path.is_file() and path.suffix != ".md" and "_tools" not in path.parts
+                and not path.name.startswith(".") and re.search(r"[ _]", path.name)):
+            r.warn(path.relative_to(root).as_posix(),
+                   "asset file name should use hyphens, not spaces or underscores")
+
     ids = {}            # id -> rel path
     req_status = {}     # REQ id -> status from front-matter
 
@@ -269,7 +278,7 @@ def check(root, today, allow_placeholders):
                 target = target.strip("<>")
                 if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("#"):
                     continue  # external URL, mailto, or in-page anchor
-                target_path = target.split("#", 1)[0]
+                target_path = unquote(target.split("#", 1)[0])   # %20 → space
                 if not target_path:
                     continue
                 if not (path.parent / target_path).resolve().exists():

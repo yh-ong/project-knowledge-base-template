@@ -324,6 +324,32 @@ date: 2026-11-03
                      "~~~\n[z](nope-tilde.md)\n~~~\n")
         self.assertEqual(self.run_check().errors, [])
 
+    def test_links_to_file_names_with_spaces_resolve(self):
+        self.write("kb/assets/Login flow.png", "x")
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "[a](../assets/Login%20flow.png) [b](<../assets/Login flow.png>) [c][ref]\n\n"
+                     "[ref]: <../assets/Login flow.png>\n")
+        self.assertEqual(self.run_check().errors, [])
+
+    def test_missing_targets_with_spaces_are_still_errors(self):
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "[a](../assets/No%20file.png) [c][ref]\n\n"
+                     "[ref]: <../assets/Also missing.png>\n")
+        report = self.run_check()
+        self.assertHasError(report, "No%20file.png")
+        self.assertHasError(report, "Also missing.png")
+
+    def test_asset_names_with_spaces_or_underscores_are_warned(self):
+        self.write("kb/assets/Login flow.png", "x")
+        self.write("kb/assets/login_flow.png", "x")
+        self.write("kb/assets/login-flow.png", "x")
+        report = self.run_check()
+        self.assertEqual(report.errors, [])
+        flagged = [w for w in report.warnings if "asset file name" in w]
+        self.assertEqual(len(flagged), 2, report.warnings)
+
     # --- specs ----------------------------------------------------------------
 
     def _spec(self, extra):

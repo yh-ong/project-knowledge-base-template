@@ -48,6 +48,7 @@ kb/
     changelog.md               ← what shipped, linked to REQ / ADR IDs
   08-design/
     design-system.md           ← look & feel, tokens, components, states, voice, accessibility
+  assets/                      ← screenshots and diagrams, created when first needed; hyphenated names (login-flow.png)
 ```
 
 Per-feature design (screens, flow, states, copy) lives in each REQ's "UX & design" section.
@@ -130,6 +131,7 @@ python3 kb/_tools/kb_check.py
 | `AGENTS.md` commands block with no runnable command | error (warning with `--allow-placeholders`) |
 | Docs past their freshness window (rules in `00-index.md`) | warning |
 | File name not starting with its ID; REQ file missing from the index | warning |
+| Asset file (anything in `kb/` that isn't Markdown) with a space or underscore in its name — use hyphens | warning |
 
 Exit code is 1 on errors. Add `--strict` to fail on warnings too. Use `--allow-placeholders` while you are still filling in the template.
 

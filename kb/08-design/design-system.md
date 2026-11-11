@@ -19,6 +19,7 @@ last_reviewed: YYYY-MM-DD
 | Component library in code | `…` e.g. `src/components/ui/` |
 | Component previews (Storybook / other) | `…` |
 | Icons / illustrations / logo | `…` |
+| Screenshots and reference images used in this KB | `kb/assets/` — hyphenated lowercase names, e.g. `checkout-error-state.png` (see [file naming](../00-index.md#file-naming)) |
 
 **If design file and code disagree:** `…` wins. <!-- pick one: usually the tokens in code -->
 
