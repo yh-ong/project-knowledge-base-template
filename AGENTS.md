@@ -42,6 +42,7 @@ Don't read the whole KB up front. Use [`kb/00-index.md`](kb/00-index.md) to find
 - Don't reverse an accepted ADR silently. If you think one is wrong, say so and propose a new ADR that supersedes it.
 - Don't add a new dependency without stating why in the PR (and an ADR if it's a framework-level choice).
 - Production data / systems: read-only unless the task explicitly says otherwise.
+- Never run a destructive or irreversible action (anything marked **DESTRUCTIVE** in a runbook, or that deletes data, drops tables/queues, force-pushes, or changes production) on your own. Stop, show the exact command and its effect, and wait for a named human to approve it.
 
 ## 5. How to work
 

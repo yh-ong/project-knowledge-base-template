@@ -30,6 +30,7 @@ links: []                   # service, ADR, past INC-
 
 ## Fix
 > ⚠️ Mark every destructive or irreversible step (deletes data, restarts primary, drops queue) with **DESTRUCTIVE** and say what to check first.
+> **Sign-off:** a DESTRUCTIVE step needs approval from a second named person before it is run — approver: `@…` (backup: `@…`). AI agents must never run one without that approval. Record who approved in the incident channel.
 
 1. `…`
 2. Verify service: `…` — expected output: …
