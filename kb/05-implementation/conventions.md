@@ -34,7 +34,7 @@ Day-to-day commands (install, run, test, lint) are canonical in [`AGENTS.md §3`
 
 | Area | Standard (default) | Our choices / deviations | Enforced by |
 |---|---|---|---|
-| Commit messages | [Conventional Commits 1.0](https://www.conventionalcommits.org/en/v1.0.0/) | see §5 | commit / PR-title lint in CI: … |
+| Commit messages | [Conventional Commits 1.0](https://www.conventionalcommits.org/en/v1.0.0/) | see §5 | commit-message lint in CI on what reaches the main branch: … |
 | Versioning | [Semantic Versioning 2.0](https://semver.org/) | | release tooling: … |
 | Changelog | [Keep a Changelog](https://keepachangelog.com/) | `kb/07-status/changelog.md` | PR checklist |
 | Formatting & lint | the language's standard formatter and linter: … | | CI lint step |
@@ -50,9 +50,13 @@ An arrow means "may depend on". Dependencies point inward, towards the business 
 
 ```mermaid
 flowchart LR
-  ui["Interface: UI, API handlers, CLI"] --> app["Application: use cases"]
-  app --> domain["Domain: business rules"]
-  infra["Infrastructure: DB, queues, external APIs"] --> app
+  boot["Composition root: startup and wiring"] --> ui["Interface: UI, API handlers, CLI"]
+  boot --> infra["Infrastructure: DB, queues, external APIs"]
+  boot --> app["Application: use cases"]
+  ui --> app
+  ui --> domain["Domain: business rules"]
+  app --> domain
+  infra --> app
   infra --> domain
 ```
 
@@ -62,8 +66,9 @@ flowchart LR
 | Application | use cases, interfaces (ports) for what it needs from outside | … | Domain |
 | Interface | UI, controllers, request/response mapping | … | Application, Domain types |
 | Infrastructure | implementations of the ports: DB, queues, external APIs | … | Application, Domain |
+| Composition root | startup code: builds the Infrastructure adapters, hands them to the use cases, registers the handlers (`main`, DI container, app bootstrap) | … | every layer — but it holds wiring only, no business logic |
 
-1. **Dependencies point inward only.** Inner layers never import outer ones.
+1. **Dependencies point inward only.** Inner layers never import outer ones. Interface and Infrastructure never import each other; only the composition root sees both.
 2. **Business rules live in Domain / Application** — never in handlers, UI components, or SQL.
 3. **The outside world goes through an interface** (DB, HTTP, queues, clock, randomness) that the inner layer defines and Infrastructure implements. This is what makes the rules testable.
 4. **Features don't reach into each other's internals** — use the other feature's public interface.
@@ -125,9 +130,10 @@ Examples:
 
 **Rules**
 - One logical change per commit. KB updates go in the same PR as the code they describe.
-- The PR title uses the same format — with squash-merge it becomes the commit on the main branch.
+- The PR title follows the commit **header** format (`<type>(<scope>): <summary>`).
+- **Squash merges:** the squash commit is what lands on the main branch, and a title alone carries no footers. Before merging, make sure the final commit message includes `Refs:` and, for a breaking change, the `BREAKING CHANGE:` footer. Also mark a breaking change with `!` in the header (`feat!:`), so the signal survives even if the body is dropped.
 - A PR must pass CI, include the KB checklist, and have at least 1 review.
-- Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional, or a PR-title check in CI -->
+- Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional on the commits that reach the main branch. A PR-title check only covers the header; it cannot verify the Refs or BREAKING CHANGE footers. -->
 - Release process: see `06-operations/environments.md`.
 
 ## 6. Definition of Done

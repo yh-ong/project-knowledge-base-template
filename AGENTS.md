@@ -52,7 +52,7 @@ Don't read the whole KB up front. Use [`kb/00-index.md`](kb/00-index.md) to find
 4. **Unclear or contradictory docs?** Code is the source of truth for *what the system does*; the KB is the source of truth for *what it should do and why*. Report mismatches instead of guessing; note them in `current-state.md → Known doc gaps`.
 5. **Possibly stale doc?** Check its `last_reviewed` against the freshness rules in `kb/00-index.md`. If stale, verify against code before relying on it.
 6. **Small, verifiable steps.** Run the fast tests after each meaningful change.
-7. **Follow the house standards** in [`conventions.md`](kb/05-implementation/conventions.md): the architecture rules (§3.2 — dependencies point inward; changing a rule needs an ADR), the clean code rules (§3.3), and Conventional Commits with a `Refs:` footer naming the source ID (§5).
+7. **Follow the house standards** in [`conventions.md`](kb/05-implementation/conventions.md): the architecture rules (§3.2 — dependencies point inward, wiring lives only in the composition root; changing a rule needs an ADR), the clean code rules (§3.3), and Conventional Commits with a `Refs:` footer naming the source ID (§5).
 
 ## 6. Keep the KB true (part of Definition of Done)
 
