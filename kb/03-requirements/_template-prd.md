@@ -70,7 +70,7 @@ links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 - **Status:** exploring / agreed · **Agreed by:** `@…` <!-- a named owner; need not be a designer -->
 - **Viewports to verify:** e.g. 375 / 768 / 1280 px
 
-**User flow** <!-- numbered steps or a diagram: entry point → screens → exit -->
+**User flow** <!-- numbered steps or a Mermaid `flowchart`: entry point → screens → exit -->
 1. …
 
 **Screens & states** <!-- every screen, and each standard state that applies -->

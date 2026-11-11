@@ -48,7 +48,7 @@ kb/
     changelog.md               ← what shipped, linked to REQ / ADR IDs
   08-design/
     design-system.md           ← look & feel, tokens, components, states, voice, accessibility
-  assets/                      ← screenshots and diagrams, created when first needed; hyphenated names (login-flow.png)
+  assets/                      ← screenshots and mockups (diagrams are Mermaid, in the docs), created when first needed; hyphenated names (login-flow.png)
 ```
 
 Per-feature design (screens, flow, states, copy) lives in each REQ's "UX & design" section.
@@ -59,12 +59,17 @@ Every `_template-*` file sits in the folder its copies go in, so the relative li
 
 Every artifact has an ID and links **up** to the reason it exists. There are two valid paths, so maintenance work doesn't need a fake roadmap item:
 
-```
-Product work:      GOAL → RM → REQ → (SPEC) → PR
-                                ↘ ADR       ↘ RUN
-
-Maintenance / ops: INC | risk | maintenance ticket → (REQ) → PR
-                                                     ↘ ADR / RUN if needed
+```mermaid
+flowchart LR
+  subgraph product["Product work"]
+    GOAL --> RM --> REQ --> SPEC["SPEC (optional)"] --> PR
+    REQ -.-> ADR
+    SPEC -.-> RUN
+  end
+  subgraph maint["Maintenance / ops"]
+    SRC["INC, risk, or maintenance ticket"] --> MREQ["REQ (optional)"] --> MPR[PR]
+    MREQ -.-> MEXTRA["ADR / RUN if needed"]
+  end
 ```
 
 - **Product work** (new behaviour users will notice) must link to an `RM-` item. The RM item owns the link to its `GOAL-`; a REQ links to its RM, not to both.
@@ -95,6 +100,7 @@ Maintenance / ops: INC | risk | maintenance ticket → (REQ) → PR
 
 - **Short beats complete.** Each doc should be readable in under 5 minutes. Link out instead of pasting.
 - **One fact, one place.** Other docs link to it; they don't copy it. (Commands live in `AGENTS.md §3`; task-level progress lives in the issue tracker.)
+- **Diagrams are Mermaid code blocks**, not image files — they diff in PRs and anyone can edit them. Rules in [`kb/00-index.md`](kb/00-index.md).
 - **Write for a smart newcomer with zero context** — that is exactly what an AI agent is.
 - **Status and freshness are explicit** — see the rules in [`kb/00-index.md`](kb/00-index.md).
 - **Docs change in the same PR as the code.** Not "later".

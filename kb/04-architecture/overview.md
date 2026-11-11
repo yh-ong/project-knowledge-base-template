@@ -10,7 +10,7 @@ last_reviewed: YYYY-MM-DD
 > Describe the system as it **is**, not as it was planned. Planned changes go in specs / ADRs.
 
 ## 1. System context
-<!-- Who/what talks to the system. A diagram (Mermaid renders on GitHub/GitLab) beats paragraphs. -->
+<!-- Who/what talks to the system. A Mermaid diagram beats paragraphs. Replace this example. -->
 ```mermaid
 flowchart LR
   user[User] --> web[Web app]
@@ -25,17 +25,29 @@ flowchart LR
 | | | | | |
 
 ## 3. Key flows
-<!-- The 2–5 flows that matter most (e.g. sign-up, checkout, nightly sync). Sequence diagram or numbered steps. -->
+<!-- The 2–5 flows that matter most (e.g. sign-up, checkout, nightly sync). One Mermaid sequence diagram each, or numbered steps for simple ones. Replace this example. -->
 
 ### Flow: <name>
-1. …
+```mermaid
+sequenceDiagram
+  actor User
+  participant Web as Web app
+  participant API
+  participant DB as Database
+  User->>Web: submits form
+  Web->>API: POST /example
+  API->>DB: write
+  DB-->>API: ok
+  API-->>Web: 201 Created
+  Web-->>User: confirmation
+```
 
 ## 4. Data
 | Store | What lives there | Source of truth for | Retention | PII? |
 |---|---|---|---|---|
 | | | | | |
 
-Core entities and relationships: <!-- link to schema file / ERD rather than copying -->
+Core entities and relationships: <!-- link to the schema file; add a small Mermaid `erDiagram` of the core entities only if it helps -->
 
 **API contracts:** the authoritative machine-readable definitions (OpenAPI / protobuf / event schemas) live at `…`. Link to them; don't copy endpoint lists here.
 

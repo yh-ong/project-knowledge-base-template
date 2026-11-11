@@ -68,6 +68,8 @@ When your change affects any of these, update the doc **in the same change**:
 | Env vars, deploy steps, alerts, infra | `kb/06-operations/environments.md` / runbooks |
 | Discovered a bug, risk, or gap you didn't fix | `kb/07-status/current-state.md` |
 
+Draw diagrams as Mermaid code blocks in the doc, never as image files (rules in `kb/00-index.md`).
+
 Only bump `last_reviewed` when you have checked the **whole** document against reality, not just the part you edited.
 
 ## 7. Glossary quick hits

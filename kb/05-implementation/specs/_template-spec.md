@@ -17,7 +17,7 @@ links: []                # ADR-xxxx, PRs
 <!-- 3 sentences: what changes, where, and the main approach. -->
 
 ## 2. Approach
-<!-- Diagrams welcome. Explain the key idea, not every line. -->
+<!-- Mermaid diagrams welcome (rules in 00-index.md). Explain the key idea, not every line. -->
 
 ### Alternatives rejected
 | Option | Why not |

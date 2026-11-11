@@ -43,7 +43,16 @@ last_reviewed: YYYY-MM-DD
 ## File naming
 
 - **Docs with IDs:** `<ID>-<slug>.md`, e.g. `REQ-018-guest-checkout.md`.
-- **Assets** (screenshots, diagrams, exported designs): put them in `kb/assets/` and name them in lowercase words separated by hyphens — `login-flow-empty-state.png`. Not spaces (`Login flow.png`), not underscores (`login_flow.png`), and not run together (`loginflow.png`). Hyphenated names need no escaping in links and read the same everywhere. The KB check warns about spaces and underscores.
+- **Assets** (screenshots, mockups, exported designs — not diagrams, see below): put them in `kb/assets/` and name them in lowercase words separated by hyphens — `login-flow-empty-state.png`. Not spaces (`Login flow.png`), not underscores (`login_flow.png`), and not run together (`loginflow.png`). Hyphenated names need no escaping in links and read the same everywhere. The KB check warns about spaces and underscores.
+
+## Diagrams
+
+Draw every diagram as a [Mermaid](https://mermaid.js.org) code block inside the doc it belongs to — not as an image file, and not as a link to a drawing tool.
+
+- **Why:** a text diagram shows up in PR diffs, can be edited by anyone (including AI agents) without special software, and renders on GitHub and GitLab.
+- **Which type:** `flowchart` for structure and user flows · `sequenceDiagram` for calls between components · `erDiagram` for data · `stateDiagram-v2` for lifecycles and status changes.
+- **Keep it readable:** about 15 nodes at most; split a bigger picture into several diagrams.
+- **Images are for what Mermaid can't draw:** screenshots and visual mockups. Those go in `kb/assets/`.
 
 ## Front-matter
 
