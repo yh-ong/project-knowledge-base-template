@@ -3,7 +3,8 @@
 
 Checks the KB (AGENTS.md + kb/) for the rules in kb/00-index.md:
 
-  errors   — missing front-matter fields, invalid status, bad or duplicate IDs,
+  errors   — missing or wrongly typed front-matter fields, invalid status or
+             severity, bad or duplicate IDs (in files and in the REQ index),
              invalid or future dates, broken relative links (inline and
              reference-style), REQ index out of sync or malformed, unfilled
              placeholders, no runnable command in the AGENTS.md commands block
@@ -32,6 +33,8 @@ from pathlib import Path
 # ---------------------------------------------------------------- rules ----
 
 LIVING_STATUSES = {"draft", "active", "deprecated"}
+SEVERITIES = {"SEV1", "SEV2", "SEV3"}
+LIST_FIELDS = {"implements", "links", "supersedes", "superseded_by"}  # all others are scalar
 
 TYPES = {
     # type: required fields, allowed statuses, id regex
@@ -68,10 +71,10 @@ PLACEHOLDERS = [
 
 # -------------------------------------------------------------- parsing ----
 
-FENCE_RE = re.compile(r"^(```|~~~).*?^\1\s*$", re.S | re.M)
+FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,}).*?(?:^ {0,3}\1[`~]*[ \t]*$|\Z)", re.S | re.M)
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
-LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
+LINK_RE = re.compile(r"\[[^\]]*\]\(\s*(<[^>\n]*>|[^)\s]+)(?:\s+\"[^\"]*\")?\s*\)")
 REF_DEF_RE = re.compile(r"^ {0,3}\[[^\]]+\]:\s*<?([^\s>]+)>?")   # [label]: target
 IGNORE_MARK = "kb-check: ignore"
 
@@ -188,8 +191,15 @@ def check(root, today, allow_placeholders):
         kind = doc_type(rel)
         required, statuses, id_re = TYPES[kind]
 
+        wrong_type = set()
+        for field, value in list(fm.items()):
+            if isinstance(value, list) and field not in LIST_FIELDS:
+                r.error(rel, f"front-matter field '{field}' must be a single value, not a list")
+                wrong_type.add(field)
+                fm[field] = ""
+
         for field in required:
-            if fm.get(field) in (None, "", []):
+            if field not in wrong_type and fm.get(field) in (None, "", []):
                 r.error(rel, f"front-matter field '{field}' is missing or empty")
         if kind == "spec" and not fm.get("implements") and not fm.get("source"):
             r.error(rel, "spec needs 'implements' (REQ ids) or 'source' "
@@ -199,6 +209,11 @@ def check(root, today, allow_placeholders):
         if status and status not in statuses:
             r.error(rel, f"status '{status}' not allowed for {kind} docs "
                          f"(allowed: {', '.join(sorted(statuses))})")
+
+        severity = fm.get("severity", "")
+        if kind == "postmortem" and severity and severity not in SEVERITIES:
+            r.error(rel, f"severity '{severity}' not allowed "
+                         f"(allowed: {', '.join(sorted(SEVERITIES))})")
 
         doc_id = fm.get("id")
         if id_re and doc_id:
@@ -239,6 +254,7 @@ def check(root, today, allow_placeholders):
             if ref_def:
                 targets.append(ref_def.group(1))
             for target in targets:
+                target = target.strip("<>")
                 if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("#"):
                     continue  # external URL, mailto, or in-page anchor
                 target_path = target.split("#", 1)[0]
@@ -320,6 +336,16 @@ def stale_check(r, rel, field, value, window, today):
         r.warn(rel, f"stale: {field} {value} is {age} days old (window {window} days)")
 
 
+def split_table_row(line):
+    """Split a Markdown table row on unescaped pipes; drop the outer empty cells."""
+    cells = [c.strip().replace("\\|", "|") for c in re.split(r"(?<!\\)\|", line.strip())]
+    if cells and cells[0] == "":
+        cells = cells[1:]
+    if cells and cells[-1] == "":
+        cells = cells[:-1]
+    return cells
+
+
 def check_req_index(r, root, req_status):
     index = root / "kb/03-requirements/index.md"
     if not index.exists():
@@ -334,7 +360,7 @@ def check_req_index(r, root, req_status):
         if not line.strip().startswith("|"):
             header = None
             continue
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        cells = split_table_row(line)
         if header is None:
             header = [c.lower() for c in cells]
             continue
@@ -346,8 +372,17 @@ def check_req_index(r, root, req_status):
             r.error(f"{rel}:{lineno}", f"malformed table row: expected {len(header)} "
                                        f"cells, found {len(cells)}")
             continue
-        m = re.search(r"REQ-\d{3,}", cells[header.index("id")])
-        if not m:
+        if not any(cells):
+            continue  # empty row
+        m = re.search(r"REQ-\w+", cells[header.index("id")])
+        if not m or not re.fullmatch(r"REQ-\d{3,}", m.group(0)):
+            shown = m.group(0) if m else cells[header.index("id")]
+            r.error(f"{rel}:{lineno}", f"invalid REQ id '{shown}' in index row "
+                                       f"(expected REQ-nnn)")
+            continue
+        if m.group(0) in listed:
+            r.error(f"{rel}:{lineno}", f"{m.group(0)} is listed more than once "
+                                       f"(first on line {listed[m.group(0)][1]})")
             continue
         listed[m.group(0)] = (cells[header.index("status")].strip("` "), lineno)
 

@@ -50,7 +50,7 @@ Day-to-day commands (install, run, test, lint) are canonical in [`AGENTS.md §3`
 
 ## 6. Definition of Done
 - [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue). Link the test or screenshot.
-- [ ] UI changes compared with the agreed design reference at the viewports listed in the REQ, including each applicable state and keyboard use (or N/A — no UI)
+- [ ] UI changes compared with the design reference and viewports recorded in the REQ or the maintenance source, including each applicable state and keyboard use (or N/A — no UI)
 - [ ] Tests added/updated and passing
 - [ ] Observability: logs/metrics for the new path
 - [ ] KB updated (see AGENTS.md §6)

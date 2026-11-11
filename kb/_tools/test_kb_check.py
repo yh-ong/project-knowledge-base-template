@@ -170,6 +170,60 @@ date: 2019-01-01
         self.assertHasError(report, "duplicate id 'REQ-001'")
         self.assertFalse(any("≠" in e for e in report.errors), report.errors)
 
+    def test_malformed_index_id_is_error(self):
+        self.write("kb/03-requirements/index.md",
+                   INDEX.format(rows="| REQ-99 | Ghost | draft |"))
+        self.assertHasError(self.run_check(), "invalid REQ id 'REQ-99'")
+
+    def test_duplicate_index_rows_are_error(self):
+        self.write("kb/03-requirements/REQ-001-login.md",
+                   REQ.format(id="REQ-001", status="ready", date="2026-11-10"))
+        self.write("kb/03-requirements/index.md", INDEX.format(
+            rows="| REQ-001 | Login | draft |\n| REQ-001 | Login | ready |"))
+        self.assertHasError(self.run_check(), "REQ-001 is listed more than once")
+
+    def test_escaped_pipe_in_index_title_is_fine(self):
+        self.write("kb/03-requirements/REQ-001-login.md",
+                   REQ.format(id="REQ-001", status="ready", date="2026-11-10"))
+        self.write("kb/03-requirements/index.md",
+                   INDEX.format(rows="| REQ-001 | A \\| B | ready |"))
+        self.assertEqual(self.run_check().errors, [])
+
+    # --- front-matter types ---------------------------------------------------
+
+    def test_list_valued_scalar_field_is_error_not_crash(self):
+        self.write("kb/01-context/glossary.md", """---
+title: Glossary
+owner: "@ana"
+status: [active]
+last_reviewed: 2026-11-10
+---
+""")
+        report = self.run_check()
+        self.assertHasError(report, "'status' must be a single value, not a list")
+        self.assertEqual(len(report.errors), 1, report.errors)
+
+    def test_list_valued_id_is_error_not_crash(self):
+        self.write("kb/03-requirements/REQ-001-login.md",
+                   REQ.format(id="[REQ-001, REQ-002]", status="draft", date="2026-11-10"))
+        self.assertHasError(self.run_check(), "'id' must be a single value, not a list")
+
+    def test_postmortem_severity_must_be_on_the_scale(self):
+        pm = """---
+id: INC-20261103-01
+title: DB failover
+owner: "@ana"
+status: draft
+severity: {sev}
+date: 2026-11-03
+---
+"""
+        path = "kb/06-operations/postmortems/INC-20261103-01-db-failover.md"
+        self.write(path, pm.format(sev="SEV2"))
+        self.assertEqual(self.run_check().errors, [])
+        self.write(path, pm.format(sev="P1"))
+        self.assertHasError(self.run_check(), "severity 'P1' not allowed")
+
     # --- placeholders and commands --------------------------------------------
 
     def test_placeholder_is_error_and_warning_when_allowed(self):
@@ -213,6 +267,22 @@ date: 2019-01-01
                    + "[web](https://example.com) [top](#glossary) "
                      "[state](../07-status/current-state.md#focus) `[x](nope.md)`\n\n"
                      "[ref]: https://example.com\n")
+        self.assertEqual(self.run_check().errors, [])
+
+    def test_angle_bracket_link_destination_is_resolved(self):
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "[state](<../07-status/current-state.md>) [gone](<nope.md>)\n")
+        report = self.run_check()
+        self.assertEqual(len(report.errors), 1, report.errors)
+        self.assertHasError(report, "nope.md")
+
+    def test_indented_and_long_fences_are_not_scanned_for_links(self):
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "- item\n\n  ```md\n  [x](nope-indented.md)\n  ```\n\n"
+                     "````md\n```\n[y](nope-nested.md)\n```\n````\n\n"
+                     "~~~\n[z](nope-tilde.md)\n~~~\n")
         self.assertEqual(self.run_check().errors, [])
 
     # --- specs ----------------------------------------------------------------

@@ -2,8 +2,8 @@
 id: INC-YYYYMMDD-01        # date + sequence for that day; file: INC-YYYYMMDD-01-<slug>.md
 title: <short description>
 owner: "@incident-lead"
-severity: SEV1 | SEV2 | SEV3
-status: draft | reviewed | actions-complete
+severity: SEV2            # SEV1 | SEV2 | SEV3 — scale in ../environments.md §6
+status: draft             # draft | reviewed | actions-complete
 date: YYYY-MM-DD
 links: []                  # RUN-, ADR-, PRs
 ---

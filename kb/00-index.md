@@ -36,7 +36,7 @@ last_reviewed: YYYY-MM-DD
 - **Why / what should happen** → this KB.
 - **What actually happens** → the code and tests. If they disagree with the KB, one of them is a bug; log it in `current-state.md`.
 - **Who is doing what this week** → your issue tracker (link: `…`). The KB holds IDs and links, not task-level churn.
-- **Commands** → `AGENTS.md §3` only.
+- **Day-to-day development commands** (install, run, test, lint) → `AGENTS.md §3` only. Operational commands live in the runbook that uses them.
 - **Visual design values** (colours, spacing, type) → the design tokens in code; **screens** → the design files. `design-system.md` links to both.
 - **API contracts** → the machine-readable files (OpenAPI / protobuf / event schemas). Their location is recorded once, in [architecture overview §4](04-architecture/overview.md); other docs link to them.
 
@@ -79,6 +79,6 @@ A doc past its window should be treated as **possibly stale** — verify against
 | REQ in `ready` or `in-progress`; SPEC in `approved` or `in-progress` | every 30 days | Other statuses are not being built from — no expiry |
 | `environments.md`, runbooks | quarterly | runbooks: `last_exercised` within 6 months, or drill it |
 | Charter, overview, conventions, glossary, design system | every 90 days | |
-| ADRs, postmortems | never — historical records | Don't rewrite the decision or the account. Only lifecycle fields change (`status`, `superseded_by`, action-item progress); to change a decision, write a new ADR that supersedes it |
+| ADRs, postmortems | never — historical records | Drafts (`proposed` ADRs, `draft` postmortems) are edited freely. Once an ADR is `accepted` or a postmortem is `reviewed`, don't rewrite the decision or the account: only lifecycle fields change (`status`, `superseded_by`, action-item progress). To change a decision, write a new ADR that supersedes it |
 
 **Only bump `last_reviewed` after checking the whole document**, not just the part you changed.

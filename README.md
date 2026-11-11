@@ -120,12 +120,12 @@ python3 kb/_tools/kb_check.py
 
 | Finds | Level |
 |---|---|
-| Missing required front-matter fields for the doc type | error |
-| `status` not allowed for the doc type | error |
+| Missing required front-matter fields for the doc type, or a list where a single value belongs | error |
+| `status` not allowed for the doc type; postmortem `severity` not SEV1–SEV3 | error |
 | Bad ID format, duplicate IDs, invalid or future dates (on every doc, including historical ones) | error |
 | A spec with neither `implements` nor `source` | error |
 | Broken relative links in `AGENTS.md` and `kb/` — inline and reference-style (code blocks ignored) | error |
-| REQ status in `index.md` ≠ the REQ file, an index row with no file, or a malformed index row | error |
+| REQ status in `index.md` ≠ the REQ file, an index row with no file, a bad or repeated REQ id in the index, or a malformed index row | error |
 | Unfilled placeholders (`…`, `[Project name]`, `YYYY-MM-DD`, `@handle`) outside `_template-*` files (HTML comments ignored) | error (warning with `--allow-placeholders`) |
 | `AGENTS.md` commands block with no runnable command | error (warning with `--allow-placeholders`) |
 | Docs past their freshness window (rules in `00-index.md`) | warning |

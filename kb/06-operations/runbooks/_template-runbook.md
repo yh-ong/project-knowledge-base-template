@@ -29,7 +29,7 @@ links: []                   # service, ADR, past INC-
 3. If <condition>, it's this issue → go to Fix. Otherwise → Escalate.
 
 ## Fix
-> ⚠️ Mark every destructive or irreversible step (deletes data, restarts primary, drops queue) with **DESTRUCTIVE** and say what to check first.
+> ⚠️ Mark every destructive or irreversible step (deletes or overwrites data, drops a queue, restarts a primary when that can lose unreplicated writes) with **DESTRUCTIVE** and say what to check first.
 > **Approval:** follow the [change approval policy](../environments.md#10-change-approval-policy). Any step that changes production needs approval from a named human; a DESTRUCTIVE step needs it from a second person who is not the one running it. Approver for this runbook: `@…` (backup: `@…`). AI agents never run either kind without that approval.
 
 1. `…`
