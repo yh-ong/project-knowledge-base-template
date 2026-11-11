@@ -1,0 +1,23 @@
+# Runs the knowledge base checker on every PR that touches the KB.
+# Copy into your repo's .github/workflows/. Remove --allow-placeholders once the template is filled in.
+name: kb-check
+
+on:
+  pull_request:
+    paths:
+      - "AGENTS.md"
+      - "kb/**"
+  schedule:
+    - cron: "0 6 * * 1"   # Mondays 06:00 UTC — catches docs that went stale without a PR
+  workflow_dispatch:
+
+jobs:
+  kb-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check knowledge base
+        run: python3 kb/_tools/kb_check.py --allow-placeholders
