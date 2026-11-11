@@ -62,29 +62,48 @@ links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 ## 8. Data & integrations
 <!-- New data stored, events emitted/consumed, external APIs touched. Point to the machine-readable contract (OpenAPI, protobuf, event schema) instead of copying it. -->
 
-## 9. Rollout & measurement
+## 9. UX & design
+<!-- How the feature will look and behave. Write "N/A — no UI" for backend-only work. -->
+- **Design link:** <!-- Figma frame / mockup / screenshot in the repo. Link the exact frame, not the whole file. --> …
+- **Design status:** exploring / final · **Designer:** `@…`
+
+**User flow** <!-- numbered steps or a diagram: entry point → screens → exit -->
+1. …
+
+**Screens & states** <!-- every screen, and each standard state that applies (see design-system.md §6) -->
+| Screen / component | Default | Loading | Empty | Error | Success | Notes |
+|---|---|---|---|---|---|---|
+| | link | link / std | link / std | link / std | link / std | |
+
+- **Responsive behaviour:** <!-- what changes on mobile / tablet -->
+- **Copy:** <!-- final text for headings, buttons, errors — or link to it -->
+- **New or changed components:** <!-- none, or list them; new ones must be added to design-system.md -->
+- **Deviations from the design system:** <!-- none, or what and why -->
+
+## 10. Rollout & measurement
 - **Rollout:** feature flag / % rollout / big bang
 - **Success metric:** … · **Baseline:** … · **Target:** …
 - **Measurement window:** e.g. 2 weeks after 100% rollout · **Metric owner:** …
 - **Guardrail metric** (must not get worse): …
 - **Rollback trigger:** …
 
-## 10. Open questions
+## 11. Open questions
 | Question | Blocking? | Owner | Due | Answer |
 |---|---|---|---|---|
 | | yes / no | | | |
 
-## 11. Ready-to-build checklist
+## 12. Ready-to-build checklist
 <!-- Status may only move to `ready` when all are ticked. -->
 - [ ] Every `must` functional requirement maps to at least one AC
 - [ ] Every edge case maps to an AC or is explicitly out of scope
 - [ ] NFRs quantified or marked `N/A` with a reason
 - [ ] Threat model linked, if required (§7)
+- [ ] Designs are final and cover every screen and applicable state (§9), or "N/A — no UI"
 - [ ] Dependencies on other teams/systems identified
 - [ ] Rollout, success metric, and rollback trigger defined
 - [ ] No blocking open questions
 
-## 12. Scope decisions
+## 13. Scope decisions
 <!-- Only material changes to scope or acceptance criteria, and why. Git history covers the rest. -->
 | Date | Decision | By |
 |---|---|---|

@@ -11,6 +11,7 @@ Most projects lose speed and direction for the same reasons:
 | New people (and AI agents) don't know what the project is for | `kb/01-context/` — one-page charter, glossary, non-goals |
 | Work drifts away from the goal | Product work links back to a roadmap item and a goal (traceability IDs) |
 | Requirements are vague, so implementation guesses | PRD template has a "ready to build" gate: every must-have maps to acceptance criteria |
+| Features look inconsistent, or get built before anyone knows how they should look | `kb/08-design/design-system.md` + a "UX & design" section in every REQ, required before it is `ready` |
 | Decisions get re-argued | ADRs record *why*, so nobody (human or AI) silently reverses them |
 | Ops learns about features at release time | Spec template has a required "Operational impact" section; runbooks live next to the code |
 | Docs rot | Freshness rules per document type, a KB update in the Definition of Done, and an optional CI check |
@@ -47,7 +48,11 @@ kb/
   07-status/
     current-state.md           ← living snapshot: focus, blockers, known issues
     changelog.md               ← what shipped, linked to REQ / ADR IDs
+  08-design/
+    design-system.md           ← look & feel, tokens, components, states, voice, accessibility
 ```
+
+Per-feature design (screens, flow, states, copy) lives in each REQ's "UX & design" section.
 
 ## Traceability
 
@@ -79,7 +84,7 @@ Maintenance / ops: INC | risk | maintenance ticket → (REQ) → PR
 ## How to adopt (30–60 minutes)
 
 1. Copy `AGENTS.md`, `kb/`, and `.github/workflows/kb-check.yml` into the root of your repo. Optionally `ln -s AGENTS.md CLAUDE.md`.
-2. Fill in, in this order: `charter.md` → `glossary.md` → `roadmap.md` → `AGENTS.md` (project summary + commands) → `overview.md` → `conventions.md` → `environments.md` → `current-state.md`. Leave the rest until you need them.
+2. Fill in, in this order: `charter.md` → `glossary.md` → `roadmap.md` → `AGENTS.md` (project summary + commands) → `overview.md` → `design-system.md` (if the project has a UI) → `conventions.md` → `environments.md` → `current-state.md`. Leave the rest until you need them.
 3. Delete any section that genuinely doesn't apply — an empty heading is worse than no heading.
 4. Add the PR checklist (below) to your PR template.
 

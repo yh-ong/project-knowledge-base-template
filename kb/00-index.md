@@ -14,6 +14,7 @@ last_reviewed: YYYY-MM-DD
 | **AI agent** | `AGENTS.md` → `07-status/current-state.md` → task's REQ | ADRs, conventions, runbooks |
 | **New developer** | `01-context/charter.md` → `glossary.md` → `04-architecture/overview.md` → `AGENTS.md` → `05-implementation/conventions.md` | ADRs, specs |
 | **Product / PM** | `charter.md` → `02-roadmap/roadmap.md` → `03-requirements/index.md` | `current-state.md` |
+| **Designer** | `charter.md` → `glossary.md` → `08-design/design-system.md` → `03-requirements/index.md` | REQ "UX & design" sections |
 | **Operations / SRE** | `charter.md` (1 min) → `04-architecture/overview.md` → `06-operations/environments.md` | runbooks, postmortems |
 | **Stakeholder / exec** | `charter.md` → `roadmap.md` → `07-status/current-state.md` | — |
 
@@ -28,6 +29,7 @@ last_reviewed: YYYY-MM-DD
 | 05 Implementation | How do I build and change it safely? | [conventions](05-implementation/conventions.md), [spec template](05-implementation/_template-spec.md) |
 | 06 Operations | How is it deployed, watched, and fixed? | [environments](06-operations/environments.md), [runbook template](06-operations/_template-runbook.md), [postmortem template](06-operations/_template-postmortem.md) |
 | 07 Status | Where are we right now? What shipped? | [current state](07-status/current-state.md), [changelog](07-status/changelog.md) |
+| 08 Design | How should it look, feel, and read? | [design system](08-design/design-system.md); per-feature screens are in each REQ's "UX & design" section |
 
 ## Source-of-truth rules
 
@@ -35,6 +37,7 @@ last_reviewed: YYYY-MM-DD
 - **What actually happens** → the code and tests. If they disagree with the KB, one of them is a bug; log it in `current-state.md`.
 - **Who is doing what this week** → your issue tracker (link: `…`). The KB holds IDs and links, not task-level churn.
 - **Commands** → `AGENTS.md §3` only.
+- **Visual design values** (colours, spacing, type) → the design tokens in code; **screens** → the design files. `design-system.md` links to both.
 - **API contracts** → the machine-readable files (OpenAPI / protobuf / event schemas) at `…`. Docs link to them.
 
 ## Front-matter
@@ -75,7 +78,7 @@ A doc past its window should be treated as **possibly stale** — verify against
 | `roadmap.md` | every roadmap review (see its cadence) | |
 | REQ / SPEC in `ready` or `in-progress` | every 30 days | `done` / `dropped` ones are historical — no expiry |
 | `environments.md`, runbooks | quarterly | runbooks: `last_exercised` within 6 months, or drill it |
-| Charter, overview, conventions, glossary | every 90 days | |
+| Charter, overview, conventions, glossary, design system | every 90 days | |
 | Accepted ADRs, closed postmortems | never — historical records | Don't edit; supersede with a new ADR instead |
 
 **Only bump `last_reviewed` after checking the whole document**, not just the part you changed.
