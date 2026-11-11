@@ -15,7 +15,7 @@ Full context: [`kb/01-context/charter.md`](kb/01-context/charter.md)
 |---|---|
 | Anything | [`kb/07-status/current-state.md`](kb/07-status/current-state.md), [`kb/01-context/glossary.md`](kb/01-context/glossary.md) |
 | Changing code (feature or fix) | its `REQ-*` in [`kb/03-requirements/`](kb/03-requirements/index.md) — or its maintenance source (INC, ticket, known issue) — then [`kb/05-implementation/conventions.md`](kb/05-implementation/conventions.md) |
-| Building or changing UI | [`kb/08-design/design-system.md`](kb/08-design/design-system.md) + the REQ's "UX & design" section. Reuse existing components and tokens; don't invent styles. |
+| Building or changing UI | [`kb/08-design/design-system.md`](kb/08-design/design-system.md) + the "UX & design" section of the REQ, or the design reference in the maintenance source. Reuse existing components and tokens; don't invent styles. |
 | Changing architecture, dependencies, data model | [`kb/04-architecture/overview.md`](kb/04-architecture/overview.md) + the accepted ADRs linked from the affected component or REQ |
 | Deploy / config / infra / incident | [`kb/06-operations/environments.md`](kb/06-operations/environments.md) + relevant runbook |
 | Planning / prioritising | [`kb/02-roadmap/roadmap.md`](kb/02-roadmap/roadmap.md) |
@@ -59,7 +59,7 @@ When your change affects any of these, update the doc **in the same change**:
 
 | You changed… | Update |
 |---|---|
-| Behaviour a user can see | the REQ's status, `kb/07-status/changelog.md` |
+| Behaviour a user can see | the REQ's status (if there is a REQ), `kb/07-status/changelog.md` |
 | A design choice that others will depend on | new ADR in `kb/04-architecture/adr/` |
 | Components, integrations, data model | `kb/04-architecture/overview.md` |
 | UI components, tokens, style rules | `kb/08-design/design-system.md` |

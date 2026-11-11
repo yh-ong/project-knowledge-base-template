@@ -189,7 +189,46 @@ date: 2019-01-01
                    INDEX.format(rows="| REQ-001 | A \\| B | ready |"))
         self.assertEqual(self.run_check().errors, [])
 
+    def test_fenced_example_rows_in_index_are_ignored(self):
+        self.write("kb/03-requirements/REQ-001-login.md",
+                   REQ.format(id="REQ-001", status="ready", date="2026-11-10"))
+        self.write("kb/03-requirements/index.md", INDEX.format(
+            rows="| REQ-001 | Login | ready |\n\nExample:\n\n```md\n"
+                 "| ID | Title | Status |\n|---|---|---|\n"
+                 "| REQ-999 | Ghost | draft |\n| REQ-001 | Login | draft |\n```"))
+        self.assertEqual(self.run_check().errors, [])
+
     # --- front-matter types ---------------------------------------------------
+
+    def test_block_list_front_matter_is_read(self):
+        self.write("kb/05-implementation/specs/SPEC-001-design.md", """---
+id: SPEC-001
+title: Design
+owner: "@ana"
+status: draft
+last_reviewed: 2026-11-10
+implements:
+  - REQ-001   # login
+  - "REQ-002"
+links:
+  - ADR-0001
+---
+""")
+        self.assertEqual(self.run_check().errors, [])
+        fm, _ = kb_check.parse_front_matter(
+            "---\nimplements:\n  - REQ-001   # login\n  - \"REQ-002\"\nowner: x\n---\n")
+        self.assertEqual(fm, {"implements": ["REQ-001", "REQ-002"], "owner": "x"})
+
+    def test_block_list_on_scalar_field_is_error(self):
+        self.write("kb/01-context/glossary.md", """---
+title: Glossary
+owner: "@ana"
+status:
+  - active
+last_reviewed: 2026-11-10
+---
+""")
+        self.assertHasError(self.run_check(), "'status' must be a single value, not a list")
 
     def test_list_valued_scalar_field_is_error_not_crash(self):
         self.write("kb/01-context/glossary.md", """---

@@ -55,6 +55,8 @@ links: [SPEC-014, ADR-0007]
 ---
 ```
 
+Lists (`links`, `implements`, `supersedes`, `superseded_by`) may be written inline (`[a, b]`) or one `- item` per line; every other field holds a single value.
+
 ADRs use `date` instead of `last_reviewed`; postmortems use `date`; runbooks add `last_exercised`.
 
 ## Status values by document type

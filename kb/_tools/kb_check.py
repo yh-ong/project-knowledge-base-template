@@ -103,7 +103,8 @@ def strip_comment(value):
 
 
 def parse_front_matter(text):
-    """Minimal YAML front-matter parser: flat `key: value` and `[a, b]` lists.
+    """Minimal YAML front-matter parser: flat `key: value`, inline `[a, b]` lists,
+    and block lists (`key:` followed by `- item` lines).
 
     Returns (dict, body_start_line) or (None, 0) if there is no front-matter.
     """
@@ -111,9 +112,19 @@ def parse_front_matter(text):
     if not lines or lines[0].strip() != "---":
         return None, 0
     data = {}
+    last_key = None
     for i, line in enumerate(lines[1:], start=1):
         if line.strip() == "---":
             return data, i + 1
+        item = re.match(r"^\s*-\s+(.*)$", line)
+        if item and last_key is not None and (data[last_key] == ""
+                                              or isinstance(data[last_key], list)):
+            if not isinstance(data[last_key], list):
+                data[last_key] = []
+            value = strip_comment(item.group(1)).strip("\"'")
+            if value:
+                data[last_key].append(value)
+            continue
         if not line.strip() or line.lstrip().startswith("#") or ":" not in line:
             continue
         key, _, value = line.partition(":")
@@ -122,7 +133,8 @@ def parse_front_matter(text):
             value = [v.strip().strip("\"'") for v in value[1:-1].split(",") if v.strip()]
         else:
             value = value.strip("\"'")
-        data[key.strip()] = value
+        last_key = key.strip()
+        data[last_key] = value
     return None, 0  # unterminated
 
 
@@ -355,7 +367,9 @@ def check_req_index(r, root, req_status):
     rel = index.relative_to(root).as_posix()
     listed = {}
     header = None
-    index_text = blank_out(COMMENT_RE, index.read_text(encoding="utf-8"))
+    index_text = index.read_text(encoding="utf-8")
+    for pattern in (FENCE_RE, COMMENT_RE):   # examples are not real rows
+        index_text = blank_out(pattern, index_text)
     for lineno, line in enumerate(index_text.split("\n"), start=1):
         if not line.strip().startswith("|"):
             header = None

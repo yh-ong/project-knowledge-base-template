@@ -8,7 +8,7 @@ last_reviewed: YYYY-MM-DD
 # Roadmap
 
 > Outcome-based, not a feature wishlist. Each item says which goal it moves and how we'll know.
-> Review cadence: every `[2 weeks / month]`. Move items between columns; don't delete — mark `dropped` with a reason.
+> Review cadence: every `[2 weeks / month]`. Move items between tables; don't delete — mark `dropped` with a reason. When an item moves to "Done / dropped", carry its Outcome, Goal and REQs with it: this row is the only record of why the work was done.
 
 ## Now (committed, in progress)
 
@@ -42,6 +42,6 @@ last_reviewed: YYYY-MM-DD
 
 ## Done / dropped
 
-| ID | Result | Date | Notes (what we learned) |
-|---|---|---|---|
-| | done / dropped | | |
+| ID | Outcome | Goal | REQs | Result | Date | Notes (what we learned) |
+|---|---|---|---|---|---|---|
+| | | | | done / dropped | | |
