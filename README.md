@@ -12,6 +12,7 @@ Most projects lose speed and direction for the same reasons:
 | Work drifts away from the goal | Product work links back to a roadmap item and a goal (traceability IDs) |
 | Requirements are vague, so implementation guesses | PRD template has a "ready to build" gate: every must-have maps to acceptance criteria |
 | Features look inconsistent, or get built before anyone knows how they should look | `kb/08-design/design-system.md` + a "UX & design" section in every REQ, required before it is `ready` |
+| Everyone commits, structures and styles code their own way | `conventions.md` adopts named standards (Conventional Commits, SemVer, clean-architecture rules) and names the tool that enforces each |
 | Decisions get re-argued | ADRs record *why*, so nobody (human or AI) silently reverses them |
 | Ops learns about features at release time | Spec template has a required "Operational impact" section; runbooks live next to the code |
 | Docs rot | Freshness rules per document type, a KB update in the Definition of Done, and an optional CI check |
@@ -37,7 +38,7 @@ kb/
     overview.md                ← system context, components, data, integrations
     adr/_template-adr.md       ← copy per decision → ADR-xxxx-<slug>.md
   05-implementation/
-    conventions.md             ← repo map, coding rules, testing, Definition of Done
+    conventions.md             ← repo map, standards (commits, architecture, clean code), testing, Definition of Done
     specs/_template-spec.md    ← technical design + task breakdown; copy → specs/SPEC-xxx-<slug>.md
   06-operations/
     environments.md            ← envs, deploy, config, secrets locations, monitoring, DR
