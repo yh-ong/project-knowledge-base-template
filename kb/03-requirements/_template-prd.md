@@ -64,16 +64,21 @@ links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 
 ## 9. UX & design
 <!-- How the feature will look and behave. Write "N/A — no UI" for backend-only work. -->
-- **Design link:** <!-- Figma frame / mockup / screenshot in the repo. Link the exact frame, not the whole file. --> …
-- **Design status:** exploring / final · **Designer:** `@…`
+- **Design reference** — one of:
+  - a mockup: <!-- Figma frame / image in the repo. Link the exact frame, not the whole file. --> …
+  - an existing screen or component to follow, plus the changes in words: <!-- fine for small changes and teams without a designer --> …
+- **Status:** exploring / agreed · **Agreed by:** `@…` <!-- a named owner; need not be a designer -->
+- **Viewports to verify:** e.g. 375 / 768 / 1280 px
 
 **User flow** <!-- numbered steps or a diagram: entry point → screens → exit -->
 1. …
 
-**Screens & states** <!-- every screen, and each standard state that applies (see design-system.md §6) -->
-| Screen / component | Default | Loading | Empty | Error | Success | Notes |
-|---|---|---|---|---|---|---|
-| | link | link / std | link / std | link / std | link / std | |
+**Screens & states** <!-- every screen, and each standard state that applies -->
+| Screen / component | Default | Loading | Empty | Error | Success | Disabled / read-only / no permission | Notes |
+|---|---|---|---|---|---|---|---|
+| | link | link / std / n/a | link / std / n/a | link / std / n/a | link / std / n/a | link / std / n/a | |
+
+`std` = uses the standard treatment in [`design-system.md` §6](../08-design/design-system.md) unchanged, so no separate design is needed. `n/a` = the state can't occur.
 
 - **Responsive behaviour:** <!-- what changes on mobile / tablet -->
 - **Copy:** <!-- final text for headings, buttons, errors — or link to it -->
@@ -98,7 +103,7 @@ links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 - [ ] Every edge case maps to an AC or is explicitly out of scope
 - [ ] NFRs quantified or marked `N/A` with a reason
 - [ ] Threat model linked, if required (§7)
-- [ ] Designs are final and cover every screen and applicable state (§9), or "N/A — no UI"
+- [ ] Design reference agreed by a named owner and covers every screen and applicable state (§9), or "N/A — no UI"
 - [ ] Dependencies on other teams/systems identified
 - [ ] Rollout, success metric, and rollback trigger defined
 - [ ] No blocking open questions

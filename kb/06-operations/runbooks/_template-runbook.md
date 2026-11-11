@@ -30,7 +30,7 @@ links: []                   # service, ADR, past INC-
 
 ## Fix
 > ⚠️ Mark every destructive or irreversible step (deletes data, restarts primary, drops queue) with **DESTRUCTIVE** and say what to check first.
-> **Sign-off:** a DESTRUCTIVE step needs approval from a second named person before it is run — approver: `@…` (backup: `@…`). AI agents must never run one without that approval. Record who approved in the incident channel.
+> **Approval:** follow the [change approval policy](../environments.md#10-change-approval-policy). Any step that changes production needs approval from a named human; a DESTRUCTIVE step needs it from a second person who is not the one running it. Approver for this runbook: `@…` (backup: `@…`). AI agents never run either kind without that approval.
 
 1. `…`
 2. Verify service: `…` — expected output: …
@@ -48,7 +48,7 @@ links: []                   # service, ADR, past INC-
 
 ## Afterwards
 - [ ] Post resolution in `#…` / status page
-- [ ] Open a postmortem if severity ≥ SEV2
+- [ ] Open a postmortem if SEV1 or SEV2
 - [ ] Update this runbook and `last_exercised`
 
 ## Notes / history

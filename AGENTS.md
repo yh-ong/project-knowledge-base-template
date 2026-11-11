@@ -42,13 +42,12 @@ Don't read the whole KB up front. Use [`kb/00-index.md`](kb/00-index.md) to find
 - Never edit the generated / do-not-edit paths listed in §3.
 - Don't reverse an accepted ADR silently. If you think one is wrong, say so and propose a new ADR that supersedes it.
 - Don't add a new dependency without stating why in the PR (and an ADR if it's a framework-level choice).
-- Production data / systems: read-only unless the task explicitly says otherwise.
-- Never run a destructive or irreversible action (anything marked **DESTRUCTIVE** in a runbook, or that deletes data, drops tables/queues, force-pushes, or changes production) on your own. Stop, show the exact command and its effect, and wait for a named human to approve it.
+- Production is read-only by default. Never change production, and never run a destructive or irreversible action in any environment that holds real or shared data (anything marked **DESTRUCTIVE** in a runbook; deleting data; dropping tables or queues; force-pushing), on your own. Follow the [change approval policy](kb/06-operations/environments.md#10-change-approval-policy): stop, show the exact command, target environment and expected effect, and wait for a named human to approve. If the command or target changes, ask again.
 
 ## 5. How to work
 
 1. **Find the "why".** Product work → its `REQ-` / `RM-` ID. Maintenance work → its source (`INC-`, ticket, or known issue). If there is none for a substantial change, ask before building.
-2. **Check acceptance criteria.** Your work is done when the REQ's acceptance criteria pass — not before, and don't gold-plate beyond them.
+2. **Check acceptance criteria.** Your work is done when the REQ's acceptance criteria pass — or, for maintenance work with no REQ, the verification criteria recorded in its source. Not before, and don't gold-plate beyond them.
 3. **Respect "Out of scope".** If the REQ lists something as out of scope, don't build it.
 4. **Unclear or contradictory docs?** Code is the source of truth for *what the system does*; the KB is the source of truth for *what it should do and why*. Report mismatches instead of guessing; note them in `current-state.md → Known doc gaps`.
 5. **Possibly stale doc?** Check its `last_reviewed` against the freshness rules in `kb/00-index.md`. If stale, verify against code before relying on it.

@@ -26,8 +26,8 @@ last_reviewed: YYYY-MM-DD
 | 02 Roadmap | What are we doing, in what order, and why that order? | [roadmap](02-roadmap/roadmap.md) |
 | 03 Requirements | What exactly must be true when a feature is done? | [index](03-requirements/index.md), [PRD template](03-requirements/_template-prd.md) |
 | 04 Architecture | How is the system shaped, and why? | [overview](04-architecture/overview.md), [ADR template](04-architecture/adr/_template-adr.md) |
-| 05 Implementation | How do I build and change it safely? | [conventions](05-implementation/conventions.md), [spec template](05-implementation/_template-spec.md) |
-| 06 Operations | How is it deployed, watched, and fixed? | [environments](06-operations/environments.md), [runbook template](06-operations/_template-runbook.md), [postmortem template](06-operations/_template-postmortem.md) |
+| 05 Implementation | How do I build and change it safely? | [conventions](05-implementation/conventions.md), [spec template](05-implementation/specs/_template-spec.md) |
+| 06 Operations | How is it deployed, watched, and fixed? | [environments](06-operations/environments.md), [runbook template](06-operations/runbooks/_template-runbook.md), [postmortem template](06-operations/postmortems/_template-postmortem.md) |
 | 07 Status | Where are we right now? What shipped? | [current state](07-status/current-state.md), [changelog](07-status/changelog.md) |
 | 08 Design | How should it look, feel, and read? | [design system](08-design/design-system.md); per-feature screens are in each REQ's "UX & design" section |
 
@@ -38,7 +38,7 @@ last_reviewed: YYYY-MM-DD
 - **Who is doing what this week** → your issue tracker (link: `…`). The KB holds IDs and links, not task-level churn.
 - **Commands** → `AGENTS.md §3` only.
 - **Visual design values** (colours, spacing, type) → the design tokens in code; **screens** → the design files. `design-system.md` links to both.
-- **API contracts** → the machine-readable files (OpenAPI / protobuf / event schemas) at `…`. Docs link to them.
+- **API contracts** → the machine-readable files (OpenAPI / protobuf / event schemas). Their location is recorded once, in [architecture overview §4](04-architecture/overview.md); other docs link to them.
 
 ## Front-matter
 
@@ -48,7 +48,7 @@ Every doc has `title`, `owner` (a person, not a team), `status`, `last_reviewed`
 ---
 id: REQ-012
 title: Guest checkout
-owner: "@handle"
+owner: "@maria"
 status: ready
 last_reviewed: 2026-11-11
 links: [SPEC-014, ADR-0007]
@@ -61,7 +61,7 @@ ADRs use `date` instead of `last_reviewed`; postmortems use `date`; runbooks add
 
 | Type | Allowed `status` |
 |---|---|
-| Living docs (charter, roadmap, overview, conventions, environments, current-state, …) | `draft` · `active` · `deprecated` |
+| Living docs — everything without an ID (charter, roadmap, overview, design system, conventions, environments, current-state, and the like) | `draft` · `active` · `deprecated` |
 | REQ | `draft` · `ready` · `in-progress` · `done` · `dropped` (meanings in [index](03-requirements/index.md)) |
 | SPEC | `draft` · `approved` · `in-progress` · `done` · `superseded` |
 | ADR | `proposed` · `accepted` · `superseded` · `deprecated` · `rejected` |
@@ -75,10 +75,10 @@ A doc past its window should be treated as **possibly stale** — verify against
 | Type | Review at least | Notes |
 |---|---|---|
 | `current-state.md` | weekly | |
-| `roadmap.md` | every roadmap review (see its cadence) | |
-| REQ / SPEC in `ready` or `in-progress` | every 30 days | `done` / `dropped` ones are historical — no expiry |
+| `roadmap.md` | every roadmap review (see its cadence) | The KB check assumes 31 days; change `FRESHNESS` in `_tools/kb_check.py` if your cadence differs |
+| REQ in `ready` or `in-progress`; SPEC in `approved` or `in-progress` | every 30 days | Other statuses are not being built from — no expiry |
 | `environments.md`, runbooks | quarterly | runbooks: `last_exercised` within 6 months, or drill it |
 | Charter, overview, conventions, glossary, design system | every 90 days | |
-| Accepted ADRs, closed postmortems | never — historical records | Don't edit; supersede with a new ADR instead |
+| ADRs, postmortems | never — historical records | Don't rewrite the decision or the account. Only lifecycle fields change (`status`, `superseded_by`, action-item progress); to change a decision, write a new ADR that supersedes it |
 
 **Only bump `last_reviewed` after checking the whole document**, not just the part you changed.

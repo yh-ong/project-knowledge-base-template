@@ -1,5 +1,10 @@
-# Runs the knowledge base checker on every PR that touches the KB.
-# Copy into your repo's .github/workflows/. Remove --allow-placeholders once the template is filled in.
+# Runs the knowledge base checker. Copy into your repo's .github/workflows/.
+#
+# During adoption both runs use --allow-placeholders: leftover placeholders and stale docs
+# show up as warnings in the log and the run stays green.
+# Once the template is filled in:
+#   1. PR run:        remove --allow-placeholders
+#   2. Scheduled run: replace --allow-placeholders with --strict, so stale docs fail the build
 name: kb-check
 
 on:
@@ -7,6 +12,7 @@ on:
     paths:
       - "AGENTS.md"
       - "kb/**"
+      - ".github/workflows/kb-check.yml"
   schedule:
     - cron: "0 6 * * 1"   # Mondays 06:00 UTC — catches docs that went stale without a PR
   workflow_dispatch:
@@ -19,5 +25,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Check knowledge base
+      - name: Test the checker
+        run: python3 -m unittest discover -s kb/_tools -p 'test_*.py'
+      - name: Check knowledge base (pull request / manual)
+        if: github.event_name != 'schedule'
+        run: python3 kb/_tools/kb_check.py --allow-placeholders
+      - name: Check knowledge base (scheduled — staleness)
+        if: github.event_name == 'schedule'
         run: python3 kb/_tools/kb_check.py --allow-placeholders

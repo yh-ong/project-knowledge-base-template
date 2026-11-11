@@ -7,11 +7,14 @@ last_reviewed: YYYY-MM-DD
 
 # Requirements Index
 
-> One row per REQ. Status here must match the REQ file's front-matter.
+> One row per REQ. Status here must match the REQ file's front-matter. Every row needs a REQ file — the KB check fails otherwise.
 
 | ID | Title | Source | Priority | Status | Spec | Owner |
 |---|---|---|---|---|---|---|
-| `REQ-001` | | RM-01 | P0 / P1 / P2 | draft | `SPEC-001` | |
+
+<!-- Example row — add rows directly under the header line above:
+| [REQ-001](REQ-001-guest-checkout.md) | Guest checkout | RM-01 | P0 | draft | SPEC-001 | @owner |
+-->
 
 **Status meanings**
 - `draft` — being written; don't build from it.

@@ -4,9 +4,14 @@
 Checks the KB (AGENTS.md + kb/) for the rules in kb/00-index.md:
 
   errors   — missing front-matter fields, invalid status, bad or duplicate IDs,
-             broken relative links, REQ index out of sync, unfilled placeholders
+             invalid or future dates, broken relative links (inline and
+             reference-style), REQ index out of sync or malformed, unfilled
+             placeholders, no runnable command in the AGENTS.md commands block
   warnings — docs past their freshness window, file name not matching its ID,
              REQ files missing from the index
+
+A line containing `<!-- kb-check: ignore -->` is skipped by the placeholder check
+(use it for instructional examples that legitimately show a placeholder).
 
 Exit code 1 if there are errors (or warnings with --strict), else 0.
 Standard library only; Python 3.8+.
@@ -33,7 +38,7 @@ TYPES = {
     "living": (["title", "owner", "status", "last_reviewed"], LIVING_STATUSES, None),
     "req": (["id", "title", "owner", "status", "priority", "source", "last_reviewed"],
             {"draft", "ready", "in-progress", "done", "dropped"}, r"REQ-\d{3,}"),
-    "spec": (["id", "title", "owner", "status", "implements", "last_reviewed"],
+    "spec": (["id", "title", "owner", "status", "last_reviewed"],  # + implements or source
              {"draft", "approved", "in-progress", "done", "superseded"}, r"SPEC-\d{3,}[A-Z]?"),
     "adr": (["id", "title", "owner", "status", "date"],
             {"proposed", "accepted", "superseded", "deprecated", "rejected"}, r"ADR-\d{4}"),
@@ -43,10 +48,10 @@ TYPES = {
                    {"draft", "reviewed", "actions-complete"}, r"INC-\d{8}-\d{2}"),
 }
 
-# Freshness windows in days (None = historical, never stale). See 00-index.md.
+# Freshness windows in days. See 00-index.md — keep the two in sync.
 FRESHNESS = {
     "kb/07-status/current-state.md": 7,
-    "kb/02-roadmap/roadmap.md": 31,
+    "kb/02-roadmap/roadmap.md": 31,      # set to your roadmap review cadence
     "kb/06-operations/environments.md": 92,
 }
 DEFAULT_LIVING_DAYS = 90
@@ -67,6 +72,8 @@ FENCE_RE = re.compile(r"^(```|~~~).*?^\1\s*$", re.S | re.M)
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
+REF_DEF_RE = re.compile(r"^ {0,3}\[[^\]]+\]:\s*<?([^\s>]+)>?")   # [label]: target
+IGNORE_MARK = "kb-check: ignore"
 
 
 def blank_out(pattern, text):
@@ -184,6 +191,9 @@ def check(root, today, allow_placeholders):
         for field in required:
             if fm.get(field) in (None, "", []):
                 r.error(rel, f"front-matter field '{field}' is missing or empty")
+        if kind == "spec" and not fm.get("implements") and not fm.get("source"):
+            r.error(rel, "spec needs 'implements' (REQ ids) or 'source' "
+                         "(maintenance source: INC, ticket, known issue)")
 
         status = fm.get("status", "")
         if status and status not in statuses:
@@ -207,8 +217,14 @@ def check(root, today, allow_placeholders):
         bad_dates = set()
         for field in ("last_reviewed", "last_exercised", "date"):
             value = fm.get(field)
-            if value and value != "YYYY-MM-DD" and parse_date(value) is None:
+            if not value or value == "YYYY-MM-DD":
+                continue
+            date = parse_date(value)
+            if date is None:
                 r.error(rel, f"{field} '{value}' is not a valid YYYY-MM-DD date")
+                bad_dates.add(field)
+            elif date > today:
+                r.error(rel, f"{field} {value} is in the future")
                 bad_dates.add(field)
 
         check_freshness(r, rel, kind, fm, today, bad_dates)
@@ -218,7 +234,11 @@ def check(root, today, allow_placeholders):
         rel = path.relative_to(root).as_posix()
         prose = prose_only(path.read_text(encoding="utf-8"))
         for lineno, line in enumerate(prose.split("\n"), start=1):
-            for target in LINK_RE.findall(line):
+            targets = LINK_RE.findall(line)
+            ref_def = REF_DEF_RE.match(line)
+            if ref_def:
+                targets.append(ref_def.group(1))
+            for target in targets:
                 if re.match(r"^[a-z][a-z0-9+.-]*:", target, re.I) or target.startswith("#"):
                     continue  # external URL, mailto, or in-page anchor
                 target_path = target.split("#", 1)[0]
@@ -230,18 +250,41 @@ def check(root, today, allow_placeholders):
     # --- placeholders -------------------------------------------------------------
     for path in placeholder_files:
         rel = path.relative_to(root).as_posix()
-        text = path.read_text(encoding="utf-8")
+        raw = path.read_text(encoding="utf-8")
+        ignored = {n for n, line in enumerate(raw.split("\n"), start=1) if IGNORE_MARK in line}
         # Ignore guidance in HTML comments; check everything else, including code.
-        text = blank_out(COMMENT_RE, text)
+        text = blank_out(COMMENT_RE, raw)
         for lineno, line in enumerate(text.split("\n"), start=1):
+            if lineno in ignored:
+                continue
             found = [label for pat, label in PLACEHOLDERS if pat.search(line)]
             if found:
                 msg = f"unfilled placeholder {', '.join(found)}"
                 (r.warn if allow_placeholders else r.error)(f"{rel}:{lineno}", msg)
 
+    # --- AGENTS.md commands block ---------------------------------------------------
+    check_commands(r, agents, allow_placeholders)
+
     # --- requirements index vs. front-matter -------------------------------------
     check_req_index(r, root, req_status)
     return r
+
+
+def check_commands(r, agents, allow_placeholders):
+    """The canonical commands block must contain at least one runnable line."""
+    if not agents.exists():
+        r.warn("AGENTS.md", "not found — agents have no entry point")
+        return
+    text = agents.read_text(encoding="utf-8")
+    section = re.search(r"^##[^\n]*\bCommands\b[^\n]*\n(.*?)(?=^## |\Z)", text, re.S | re.M)
+    if not section:
+        r.warn("AGENTS.md", "no '## … Commands' section found")
+        return
+    block = FENCE_RE.search(section.group(1))
+    lines = block.group(0).strip().split("\n")[1:-1] if block else []
+    if not any(l.strip() and not l.strip().startswith("#") for l in lines):
+        report = r.warn if allow_placeholders else r.error
+        report("AGENTS.md", "Commands section has no runnable command (empty or comments only)")
 
 
 def check_freshness(r, rel, kind, fm, today, bad_dates):
@@ -273,9 +316,7 @@ def stale_check(r, rel, field, value, window, today):
     if date is None:
         return  # missing, placeholder, or invalid — reported by other checks
     age = (today - date).days
-    if age < 0:
-        r.error(rel, f"{field} {value} is in the future")
-    elif age > window:
+    if age > window:
         r.warn(rel, f"stale: {field} {value} is {age} days old (window {window} days)")
 
 
@@ -288,7 +329,8 @@ def check_req_index(r, root, req_status):
     rel = index.relative_to(root).as_posix()
     listed = {}
     header = None
-    for lineno, line in enumerate(index.read_text(encoding="utf-8").split("\n"), start=1):
+    index_text = blank_out(COMMENT_RE, index.read_text(encoding="utf-8"))
+    for lineno, line in enumerate(index_text.split("\n"), start=1):
         if not line.strip().startswith("|"):
             header = None
             continue
@@ -300,6 +342,10 @@ def check_req_index(r, root, req_status):
             continue  # separator row
         if "id" not in header or "status" not in header:
             continue
+        if len(cells) != len(header):
+            r.error(f"{rel}:{lineno}", f"malformed table row: expected {len(header)} "
+                                       f"cells, found {len(cells)}")
+            continue
         m = re.search(r"REQ-\d{3,}", cells[header.index("id")])
         if not m:
             continue
@@ -307,9 +353,7 @@ def check_req_index(r, root, req_status):
 
     for req_id, (status, lineno) in listed.items():
         if req_id not in req_status:
-            # An index row for a REQ with no file is only OK for the template's example row.
-            if req_status:
-                r.error(f"{rel}:{lineno}", f"{req_id} is listed but has no REQ file")
+            r.error(f"{rel}:{lineno}", f"{req_id} is listed but has no REQ file")
         elif status != req_status[req_id]:
             r.error(f"{rel}:{lineno}", f"{req_id} status '{status}' ≠ front-matter "
                                        f"'{req_status[req_id]}'")

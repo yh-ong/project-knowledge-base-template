@@ -43,13 +43,14 @@ Day-to-day commands (install, run, test, lint) are canonical in [`AGENTS.md §3`
 | E2E | | | user-facing flows in REQ acceptance criteria |
 
 ## 5. Branching, PRs, release
-- Branch naming: `feat/REQ-012-guest-checkout`
-- Commit / PR title includes the REQ or RM ID.
+- Branch naming: `feat/REQ-012-guest-checkout`, `fix/INC-20261103-01-db-failover`, `chore/<ticket>-bump-deps`
+- Commit / PR title includes the source ID: a REQ or RM for product work; an INC, maintenance ticket, or linked known issue for maintenance work.
 - PR must: pass CI, include KB checklist, have ≥ 1 review.
 - Release process: see `06-operations/environments.md`.
 
 ## 6. Definition of Done
-- [ ] Acceptance criteria in the REQ verified (link test or screenshot)
+- [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue). Link the test or screenshot.
+- [ ] UI changes compared with the agreed design reference at the viewports listed in the REQ, including each applicable state and keyboard use (or N/A — no UI)
 - [ ] Tests added/updated and passing
 - [ ] Observability: logs/metrics for the new path
 - [ ] KB updated (see AGENTS.md §6)

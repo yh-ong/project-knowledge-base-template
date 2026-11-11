@@ -23,7 +23,7 @@ AGENTS.md                      ← entry point for AI agents (also symlink as CL
 .github/workflows/kb-check.yml ← runs the KB check in CI
 kb/
   00-index.md                  ← map, reading order per role, status & freshness rules
-  _tools/kb_check.py           ← KB checker (see "KB check" below)
+  _tools/kb_check.py           ← KB checker (see "KB check" below) + its tests
   01-context/
     charter.md                 ← what / why / who / goals / non-goals / success metrics
     glossary.md                ← domain terms, one meaning each
@@ -38,13 +38,11 @@ kb/
     adr/_template-adr.md       ← copy per decision → ADR-xxxx-<slug>.md
   05-implementation/
     conventions.md             ← repo map, coding rules, testing, Definition of Done
-    _template-spec.md          ← technical design + task breakdown
-    specs/                     ← SPEC-xxx-<slug>.md copies go here
+    specs/_template-spec.md    ← technical design + task breakdown; copy → specs/SPEC-xxx-<slug>.md
   06-operations/
     environments.md            ← envs, deploy, config, secrets locations, monitoring, DR
-    _template-runbook.md       ← one per alert / operational task
-    _template-postmortem.md    ← one per incident
-    runbooks/  postmortems/    ← filled-in copies go here
+    runbooks/_template-runbook.md       ← one per alert / operational task; copy → runbooks/RUN-xxx-<slug>.md
+    postmortems/_template-postmortem.md ← one per incident; copy → postmortems/INC-yyyymmdd-nn-<slug>.md
   07-status/
     current-state.md           ← living snapshot: focus, blockers, known issues
     changelog.md               ← what shipped, linked to REQ / ADR IDs
@@ -53,6 +51,8 @@ kb/
 ```
 
 Per-feature design (screens, flow, states, copy) lives in each REQ's "UX & design" section.
+
+Every `_template-*` file sits in the folder its copies go in, so the relative links inside it keep working after you copy it.
 
 ## Traceability
 
@@ -76,7 +76,7 @@ Maintenance / ops: INC | risk | maintenance ticket → (REQ) → PR
 | `GOAL-n` | `01-context/charter.md` | `GOAL-2` Reduce checkout drop-off |
 | `RM-nn` | `02-roadmap/roadmap.md` | `RM-04` Guest checkout |
 | `REQ-nnn` | `03-requirements/` | `REQ-018-guest-checkout.md` |
-| `SPEC-nnn` | `05-implementation/specs/` | own number; `implements: [REQ-018]` |
+| `SPEC-nnn` | `05-implementation/specs/` | own number; `implements: [REQ-018]`, or `source:` for maintenance work |
 | `ADR-nnnn` | `04-architecture/adr/` | `ADR-0007-use-postgres.md` |
 | `RUN-nnn` | `06-operations/runbooks/` | `RUN-004-payment-webhook-backlog.md` |
 | `INC-yyyymmdd-nn` | `06-operations/postmortems/` | `INC-20261103-01-db-failover.md` |
@@ -88,7 +88,7 @@ Maintenance / ops: INC | risk | maintenance ticket → (REQ) → PR
 3. Delete any section that genuinely doesn't apply — an empty heading is worse than no heading.
 4. Add the PR checklist (below) to your PR template.
 
-**The KB is not ready to rely on while any of these remain:** `…` placeholders, `[Project name]`, `YYYY-MM-DD`, example owners like `@handle`, or empty command blocks in `AGENTS.md`. The [KB check](#kb-check-run-locally-and-in-ci) lists every one that's left.
+**The KB is not ready to rely on while any of these remain:** `…` placeholders, `[Project name]`, `YYYY-MM-DD`, example owners like `@handle`, or empty command blocks in `AGENTS.md`. The [KB check](#kb-check-run-locally-and-in-ci) reports those four patterns and a commands block with no runnable command. It can't tell whether what you wrote is *right* — that still needs a read-through.
 
 ## Rules that keep it alive
 
@@ -122,13 +122,22 @@ python3 kb/_tools/kb_check.py
 |---|---|
 | Missing required front-matter fields for the doc type | error |
 | `status` not allowed for the doc type | error |
-| Bad ID format, duplicate IDs, invalid or future dates | error |
-| Broken relative links in `AGENTS.md` and `kb/` (code blocks ignored) | error |
-| REQ status in `index.md` ≠ the REQ file, or an index row with no file | error |
-| Unfilled placeholders outside `_template-*` files (HTML comments ignored) | error (warning with `--allow-placeholders`) |
+| Bad ID format, duplicate IDs, invalid or future dates (on every doc, including historical ones) | error |
+| A spec with neither `implements` nor `source` | error |
+| Broken relative links in `AGENTS.md` and `kb/` — inline and reference-style (code blocks ignored) | error |
+| REQ status in `index.md` ≠ the REQ file, an index row with no file, or a malformed index row | error |
+| Unfilled placeholders (`…`, `[Project name]`, `YYYY-MM-DD`, `@handle`) outside `_template-*` files (HTML comments ignored) | error (warning with `--allow-placeholders`) |
+| `AGENTS.md` commands block with no runnable command | error (warning with `--allow-placeholders`) |
 | Docs past their freshness window (rules in `00-index.md`) | warning |
 | File name not starting with its ID; REQ file missing from the index | warning |
 
 Exit code is 1 on errors. Add `--strict` to fail on warnings too. Use `--allow-placeholders` while you are still filling in the template.
 
-To run it in CI, copy [`.github/workflows/kb-check.yml`](.github/workflows/kb-check.yml). It runs on PRs that touch the KB, and every Monday, so docs that go stale with no PR still get flagged. Remove `--allow-placeholders` from it once the template is filled in.
+If a line legitimately shows a placeholder (an instructional example), end it with `<!-- kb-check: ignore -->`.
+
+To run it in CI, copy [`.github/workflows/kb-check.yml`](.github/workflows/kb-check.yml). It runs on PRs that touch the KB, and every Monday.
+
+- **During adoption** both runs use `--allow-placeholders`, so stale docs and leftover placeholders appear only as warnings in the log — the run stays green.
+- **Once the template is filled in**, follow the comments in the workflow: drop `--allow-placeholders` from the PR run, and switch the Monday run to `--strict` so a doc that went stale fails the build.
+
+The checker has its own tests: `python3 -m unittest discover -s kb/_tools -p 'test_*.py'`.

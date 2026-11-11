@@ -11,6 +11,8 @@ links: []                # REQ-xxx, RM-xx
 
 # ADR-0000 — <title>
 
+> Once accepted, don't rewrite this record. Only `status` and `superseded_by` change; to change the decision, write a new ADR that supersedes this one.
+
 ## Context
 <!-- What forces are at play? What problem made a decision necessary? Facts, not opinions. -->
 
