@@ -4,7 +4,7 @@ title: <feature name>
 owner: "@handle"
 status: draft            # draft | ready | in-progress | done | dropped  (see index.md)
 priority: P1             # P0 must-have | P1 should | P2 nice
-source: RM-00            # product work: RM-xx · maintenance: INC-…, ticket link, or known issue
+source: RM-00            # product work: RM-xx · maintenance: INC-…, ticket link, or known issue KI-nnn
 last_reviewed: YYYY-MM-DD
 links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 ---

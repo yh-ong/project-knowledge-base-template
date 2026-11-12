@@ -4,7 +4,7 @@ title: <feature> — technical design
 owner: "@handle"
 status: draft            # draft | approved | in-progress | done | superseded
 implements: [REQ-000]    # one or more REQs — or, for maintenance work with no REQ, delete this line and use:
-# source: INC-YYYYMMDD-01 # INC, maintenance ticket, or known issue
+# source: INC-YYYYMMDD-01 # INC, maintenance ticket, or known issue (KI-nnn)
 last_reviewed: YYYY-MM-DD
 links: []                # ADR-xxxx, PRs
 ---

@@ -53,8 +53,9 @@ flowchart LR
   boot["Composition root: startup and wiring"] --> ui["Interface: UI, API handlers, CLI"]
   boot --> infra["Infrastructure: DB, queues, external APIs"]
   boot --> app["Application: use cases"]
+  boot --> domain["Domain: business rules"]
   ui --> app
-  ui --> domain["Domain: business rules"]
+  ui --> domain
   app --> domain
   infra --> app
   infra --> domain
@@ -96,7 +97,7 @@ flowchart LR
 
 ## 5. Branching, commits, PRs, release
 
-**Branches:** `<type>/<source-id>-<slug>` — `feat/REQ-012-guest-checkout`, `fix/INC-20261103-01-db-failover`, `chore/<ticket>-bump-deps`.
+**Branches:** `<type>/<source-id>-<slug>` — `feat/REQ-012-guest-checkout`, `fix/INC-20261103-01-db-failover`, `fix/KI-007-export-timeout`, `chore/<ticket>-bump-deps`.
 
 **Commits** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 
@@ -105,7 +106,7 @@ flowchart LR
 
 <optional body: why the change was needed, not what the diff shows>
 
-Refs: <source ID: REQ / RM for product work; INC, ticket or known issue for maintenance>
+Refs: <source ID: REQ / RM for product work; INC, ticket or known issue (KI-nnn) for maintenance>
 BREAKING CHANGE: <what breaks and how to migrate, only when it applies>
 ```
 
@@ -137,7 +138,7 @@ Examples:
 - Release process: see `06-operations/environments.md`.
 
 ## 6. Definition of Done
-- [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue). Link the test or screenshot.
+- [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue `KI-nnn`). Link the test or screenshot.
 - [ ] UI changes compared with the design reference and viewports recorded in the REQ or the maintenance source, including each applicable state and keyboard use (or N/A — no UI)
 - [ ] Tests added/updated and passing
 - [ ] Observability: logs/metrics for the new path

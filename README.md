@@ -74,7 +74,7 @@ flowchart LR
 ```
 
 - **Product work** (new behaviour users will notice) must link to an `RM-` item. The RM item owns the link to its `GOAL-`; a REQ links to its RM, not to both.
-- **Maintenance work** (bug fixes, dependency/security updates, refactors, incident follow-ups) links to its source: an `INC-`, a ticket, or a row in `current-state.md → Known issues`. A REQ is only needed when the behaviour change needs agreed acceptance criteria.
+- **Maintenance work** (bug fixes, dependency/security updates, refactors, incident follow-ups) links to its source: an `INC-`, a tracker ticket, or a known issue (`KI-nnn`, a row in `current-state.md → Known issues`). The source records how the fix will be verified. A REQ is only needed when the behaviour change needs agreed acceptance criteria.
 - If product work can't be linked to an RM item, either the roadmap is missing something or the work shouldn't be done. That one rule keeps direction correct.
 - Prefer real relative links (`[REQ-018](../03-requirements/REQ-018-guest-checkout.md)`) over bare IDs where the target file exists.
 
@@ -87,6 +87,7 @@ flowchart LR
 | `ADR-nnnn` | `04-architecture/adr/` | `ADR-0007-use-postgres.md` |
 | `RUN-nnn` | `06-operations/runbooks/` | `RUN-004-payment-webhook-backlog.md` |
 | `INC-yyyymmdd-nn` | `06-operations/postmortems/` | `INC-20261103-01-db-failover.md` |
+| `KI-nnn` | `07-status/current-state.md` (Known issues table) | `KI-007` Export times out over 10k rows |
 
 ## How to adopt (30–60 minutes)
 

@@ -42,4 +42,4 @@ links: []                  # RUN-, ADR-, PRs
 ## KB updates made
 - [ ] Runbook created / updated: RUN-…
 - [ ] Architecture / ADR updated if design was a factor
-- [ ] `current-state.md` known issues updated
+- [ ] `current-state.md` known issues updated (new `KI-nnn` rows for anything left unfixed)

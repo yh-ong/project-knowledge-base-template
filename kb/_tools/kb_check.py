@@ -76,7 +76,9 @@ PLACEHOLDERS = [
 FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,}).*?(?:^ {0,3}\1[`~]*[ \t]*$|\Z)", re.S | re.M)
 COMMENT_RE = re.compile(r"<!--.*?-->", re.S)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
-LINK_RE = re.compile(r"\[[^\]]*\]\(\s*(<[^>\n]*>|[^)\s]+)(?:\s+\"[^\"]*\")?\s*\)")
+# Destination: <angle form>, or plain text that may contain balanced (parentheses).
+LINK_RE = re.compile(
+    r"\[[^\]]*\]\(\s*(<[^>\n]*>|(?:[^()\s]|\([^()\s]*\))+)(?:\s+\"[^\"]*\")?\s*\)")
 REF_DEF_RE = re.compile(r"^ {0,3}\[[^\]]+\]:\s*(<[^>\n]*>|\S+)")   # [label]: target
 IGNORE_MARK = "kb-check: ignore"
 
@@ -282,7 +284,9 @@ def check(root, today, allow_placeholders):
                 target_path = unquote(re.split(r"[?#]", target, maxsplit=1)[0])
                 if not target_path:
                     continue
-                if not (path.parent / target_path).resolve().exists():
+                # A leading "/" means "from the repository root", as GitHub renders it.
+                base = root if target_path.startswith("/") else path.parent
+                if not (base / target_path.lstrip("/")).resolve().exists():
                     r.error(f"{rel}:{lineno}", f"broken link → {target}")
 
     # --- placeholders -------------------------------------------------------------

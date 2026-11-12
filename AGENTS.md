@@ -14,7 +14,7 @@ Full context: [`kb/01-context/charter.md`](kb/01-context/charter.md)
 | If your task is… | Read first |
 |---|---|
 | Anything | [`kb/07-status/current-state.md`](kb/07-status/current-state.md), [`kb/01-context/glossary.md`](kb/01-context/glossary.md) |
-| Changing code (feature or fix) | its `REQ-*` in [`kb/03-requirements/`](kb/03-requirements/index.md) — or its maintenance source (INC, ticket, known issue) — then [`kb/05-implementation/conventions.md`](kb/05-implementation/conventions.md) |
+| Changing code (feature or fix) | its `REQ-*` in [`kb/03-requirements/`](kb/03-requirements/index.md) — or its maintenance source (`INC-`, ticket, or known issue `KI-`) — then [`kb/05-implementation/conventions.md`](kb/05-implementation/conventions.md) |
 | Building or changing UI | [`kb/08-design/design-system.md`](kb/08-design/design-system.md) + the "UX & design" section of the REQ, or the design reference in the maintenance source. Reuse existing components and tokens; don't invent styles. |
 | Changing architecture, dependencies, data model | [`kb/04-architecture/overview.md`](kb/04-architecture/overview.md) + the accepted ADRs linked from the affected component or REQ |
 | Deploy / config / infra / incident | [`kb/06-operations/environments.md`](kb/06-operations/environments.md) + relevant runbook |
@@ -46,7 +46,7 @@ Don't read the whole KB up front. Use [`kb/00-index.md`](kb/00-index.md) to find
 
 ## 5. How to work
 
-1. **Find the "why".** Product work → its `REQ-` / `RM-` ID. Maintenance work → its source (`INC-`, ticket, or known issue). If there is none for a substantial change, ask before building.
+1. **Find the "why".** Product work → its `REQ-` / `RM-` ID. Maintenance work → its source (`INC-`, ticket, or known issue `KI-`). If there is none for a substantial change, ask before building.
 2. **Check acceptance criteria.** Your work is done when the REQ's acceptance criteria pass — or, for maintenance work with no REQ, the verification criteria recorded in its source. Not before, and don't gold-plate beyond them.
 3. **Respect "Out of scope".** If the REQ lists something as out of scope, don't build it.
 4. **Unclear or contradictory docs?** Code is the source of truth for *what the system does*; the KB is the source of truth for *what it should do and why*. Report mismatches instead of guessing; note them in `current-state.md → Known doc gaps`.

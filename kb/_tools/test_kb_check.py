@@ -352,6 +352,25 @@ date: 2026-11-03
         self.assertEqual(len(report.errors), 1, report.errors)
         self.assertHasError(report, "missing.png?raw=true")
 
+    def test_parentheses_in_link_destination_are_kept(self):
+        self.write("kb/assets/flow(v2).png", "x")
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "[ok](../assets/flow(v2).png) [gone](../assets/gone(v2).png) "
+                     "(see [state](../07-status/current-state.md))\n")
+        report = self.run_check()
+        self.assertEqual(len(report.errors), 1, report.errors)
+        self.assertHasError(report, "../assets/gone(v2).png")
+
+    def test_root_relative_links_resolve_from_repo_root(self):
+        self.write("kb/01-context/glossary.md",
+                   LIVING.format(title="Glossary", date="2026-11-10")
+                   + "[ok](/kb/07-status/current-state.md) [agents](/AGENTS.md) "
+                     "[gone](/kb/nope.md)\n")
+        report = self.run_check()
+        self.assertEqual(len(report.errors), 1, report.errors)
+        self.assertHasError(report, "/kb/nope.md")
+
     def test_asset_names_with_spaces_or_underscores_are_warned(self):
         self.write("kb/assets/Login flow.png", "x")
         self.write("kb/assets/login_flow.png", "x")
