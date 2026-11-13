@@ -185,7 +185,7 @@ Examples:
   | Merge | Message header | `Refs:` |
   |---|---|---|
   | `develop` into your feature branch, to stay current | `chore(sync): merge develop into feature/REQ-018-guest-checkout` | the feature's source ID |
-  | `release/*` into `main` | `chore(release): 1.3.0` | the roadmap items shipped, e.g. `RM-04, RM-05` |
+  | `release/*` into `main` | `chore(release): 1.3.0` | the sources shipped: RM IDs for product work; INC, ticket or KI IDs for maintenance — e.g. `RM-04, KI-007`. A maintenance-only release needs no RM. |
   | `release/*` or `hotfix/*` back into `develop` (or the open release) | `chore(sync): merge release/1.3.0 into develop` | same as the merge into `main` |
   | `hotfix/*` into `main` | the fix itself, e.g. `fix(payments): retry webhook on timeout` | the hotfix's source ID |
 

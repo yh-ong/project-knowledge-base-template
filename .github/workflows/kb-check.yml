@@ -29,12 +29,21 @@ jobs:
       - name: Switch to develop (scheduled run only)
         if: github.event_name == 'schedule'
         run: |
-          if git ls-remote --exit-code --heads origin develop >/dev/null 2>&1; then
-            git fetch --depth 1 origin develop
+          # Exit code 2 means "no such branch". Anything else non-zero is a real failure
+          # (network, auth) and must not silently fall back to the default branch.
+          set +e
+          git ls-remote --exit-code origin refs/heads/develop >/dev/null
+          status=$?
+          set -e
+          if [ "$status" -eq 0 ]; then
+            git fetch --depth 1 origin refs/heads/develop
             git checkout --detach FETCH_HEAD
             echo "Checking the develop branch."
+          elif [ "$status" -eq 2 ]; then
+            echo "No develop branch; checking the default branch."
           else
-            echo "No develop branch found; checking the default branch."
+            echo "::error::Could not look up the develop branch (git exit code $status)."
+            exit 1
           fi
       - uses: actions/setup-python@v5
         with:
