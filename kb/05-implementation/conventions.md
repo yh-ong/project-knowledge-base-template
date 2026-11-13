@@ -133,9 +133,19 @@ Examples:
 - One logical change per commit. KB updates go in the same PR as the code they describe.
 - The PR title follows the commit **header** format (`<type>(<scope>): <summary>`).
 - **Squash merges:** the squash commit is what lands on the main branch, and a title alone carries no footers. Before merging, make sure the final commit message includes `Refs:` and, for a breaking change, the `BREAKING CHANGE:` footer. Also mark a breaking change with `!` in the header (`feat!:`), so the signal survives even if the body is dropped.
-- A PR must pass CI, include the KB checklist, and have at least 1 review.
+- A PR must pass CI, include the KB checklist, and meet the review rules in §5.1.
 - Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional on the commits that reach the main branch. A PR-title check only covers the header; it cannot verify the Refs or BREAKING CHANGE footers. -->
 - Release process: see `06-operations/environments.md`.
+
+### 5.1 Review
+
+- **Who approves a PR:** a named human other than its author, competent in the affected area. This applies to every PR, including KB-only and agent-authored ones. AI review is a useful first pass but is advisory: it never counts as approval.
+- **One-person projects:** with no second human, the fallback is an AI review plus the author's own review against §6, and the PR says so. Switch to the rule above as soon as there is a second person.
+- **Who else to include:** decision authority lives in [stakeholders](../01-context/stakeholders.md). Bring in the relevant decision owner when a change alters scope or design, and a reviewer competent in security or privacy when it affects those risks.
+- **What the reviewer judges:** whether the evidence for the applicable §6 items is sufficient, whether the change stays in scope, follows the architecture rules (§3.2), and what could go wrong. Do the tests actually establish the claimed behaviour? For KB-only changes: is it accurate, and consistent with the rest of the KB? Leave anything CI enforces to CI.
+- **Feedback** is labelled `blocking` (say which requirement is unmet, or what the risk is) or `suggestion` (optional). Blocking feedback is resolved before approval.
+- **Record** the approval in the PR or a linked decision thread. A material change after approval needs re-review by the affected approver.
+- **Approving a PR does not authorise running anything in production** — that follows the [change approval policy](../06-operations/environments.md#10-change-approval-policy).
 
 ## 6. Definition of Done
 - [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue `KI-nnn`). Link the test or screenshot.

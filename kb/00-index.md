@@ -84,6 +84,8 @@ ADRs use `date` instead of `last_reviewed`; postmortems use `date`; runbooks add
 | Runbook | `active` · `deprecated` |
 | Postmortem | `draft` · `reviewed` · `actions-complete` |
 
+Who may move a doc to `ready`, `approved` or `accepted`: [stakeholders](01-context/stakeholders.md). How review works: [conventions §5.1](05-implementation/conventions.md#51-review).
+
 ## Freshness rules
 
 A doc past its window should be treated as **possibly stale** — verify against code before relying on it.

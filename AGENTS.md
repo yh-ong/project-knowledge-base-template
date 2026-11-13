@@ -41,6 +41,7 @@ Don't read the whole KB up front. Use [`kb/00-index.md`](kb/00-index.md) to find
 - Never commit secrets. Secrets live in: `…`
 - Never edit the generated / do-not-edit paths listed in §3.
 - Don't reverse an accepted ADR silently. If you think one is wrong, say so and propose a new ADR that supersedes it.
+- Never approve or merge your own work, and never set a doc to `ready`, `approved` or `accepted` yourself: those need a named human (see `kb/05-implementation/conventions.md` §5.1 and `kb/01-context/stakeholders.md`). Your review of someone else's change is advisory.
 - Don't add a new dependency without stating why in the PR (and an ADR if it's a framework-level choice).
 - Production is read-only by default. Never change production, and never run a destructive or irreversible action in any environment that holds real or shared data (anything marked **DESTRUCTIVE** in a runbook; deleting data; dropping tables or queues; force-pushing), on your own. Follow the [change approval policy](kb/06-operations/environments.md#10-change-approval-policy): stop, show the exact command, target environment and expected effect, and wait for a named human to approve. If the command or target changes, ask again.
 
