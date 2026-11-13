@@ -12,7 +12,7 @@ Most projects lose speed and direction for the same reasons:
 | Work drifts away from the goal | Product work links back to a roadmap item and a goal (traceability IDs) |
 | Requirements are vague, so implementation guesses | PRD template has a "ready to build" gate: every must-have maps to acceptance criteria |
 | Features look inconsistent, or get built before anyone knows how they should look | `kb/08-design/design-system.md` + a "UX & design" section in every REQ, required before it is `ready` |
-| Everyone commits, structures and styles code their own way | `conventions.md` adopts named standards (Conventional Commits, SemVer, clean-architecture rules) and names the tool that enforces each |
+| Everyone branches, commits, structures and styles code their own way | `conventions.md` adopts named standards (Gitflow branching, Conventional Commits, SemVer, clean-architecture rules) and names the tool that enforces each |
 | "Reviewed" can mean a bot comment, and anyone can mark a doc approved | `stakeholders.md` names who decides; `conventions.md` §5.1 requires a named human approver and treats AI review as advisory |
 | Decisions get re-argued | ADRs record *why*, so nobody (human or AI) silently reverses them |
 | Ops learns about features at release time | Spec template has a required "Operational impact" section; runbooks live next to the code |

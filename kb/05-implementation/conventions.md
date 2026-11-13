@@ -34,7 +34,8 @@ Day-to-day commands (install, run, test, lint) are canonical in [`AGENTS.md §3`
 
 | Area | Standard (default) | Our choices / deviations | Enforced by |
 |---|---|---|---|
-| Commit messages | [Conventional Commits 1.0](https://www.conventionalcommits.org/en/v1.0.0/) | see §5 | commit-message lint in CI on what reaches the main branch: … |
+| Branching | [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/) (classic): `main`, `develop`, `feature/*`, `release/*`, `hotfix/*` | see §5 | branch protection on `main` and `develop`: … |
+| Commit messages | [Conventional Commits 1.0](https://www.conventionalcommits.org/en/v1.0.0/) | see §5 | commit-message lint in CI on every commit in a PR: … |
 | Versioning | [Semantic Versioning 2.0](https://semver.org/) | | release tooling: … |
 | Changelog | [Keep a Changelog](https://keepachangelog.com/) | `kb/07-status/changelog.md` | PR checklist |
 | Formatting & lint | the language's standard formatter and linter: … | | CI lint step |
@@ -97,7 +98,54 @@ flowchart LR
 
 ## 5. Branching, commits, PRs, release
 
-**Branches:** `<type>/<source-id>-<slug>` — `feat/REQ-012-guest-checkout`, `fix/INC-20261103-01-db-failover`, `fix/KI-007-export-timeout`, `chore/<ticket>-bump-deps`.
+**Branching strategy:** [Gitflow](https://nvie.com/posts/a-successful-git-branching-model/) (classic). <!-- Changing the strategy needs an ADR. -->
+
+| Branch | Purpose | Cut from | Merges into |
+|---|---|---|---|
+| `main` | production-ready code; every merge is a tagged release | — | — |
+| `develop` | integration branch: everything finished for the next release | — | — |
+| `feature/*` | one piece of work (new feature, non-urgent fix, chore) | `develop` | `develop` |
+| `release/*` | release preparation: version bump, changelog, release fixes only | `develop` | `main` **and** `develop` |
+| `hotfix/*` | emergency fix for production | `main` | `main` **and** `develop` — or, while a `release/*` branch is open, `main` **and** that release branch |
+
+```mermaid
+gitGraph
+  commit id: "initial" tag: "v1.0.0"
+  branch develop
+  commit id: "start 1.1"
+  branch feature
+  commit id: "feat: guest checkout"
+  checkout develop
+  merge feature
+  branch release
+  commit id: "chore: release 1.1.0"
+  checkout main
+  merge release tag: "v1.1.0"
+  checkout develop
+  merge release
+  checkout main
+  branch hotfix
+  commit id: "fix: payment timeout"
+  checkout main
+  merge hotfix tag: "v1.1.1"
+  checkout develop
+  merge hotfix
+```
+
+1. **`main` and `develop` are protected.** No direct pushes; every change arrives by PR with passing CI and an approval (§5.1). Never force-push either.
+2. **Features:** cut `feature/*` from `develop`, one branch per source ID. Update it from `develop` at least daily and keep it short — a branch that lives for weeks is where merge pain comes from. Unfinished work that must merge goes behind a feature flag. Delete the branch after merging.
+3. **Releases:** when `develop` holds everything for the release, cut `release/<version>`. From then on only release fixes, the version bump and the changelog go on it; new features keep going to `develop` for the next release. When it passes on staging, merge it into `main`, tag `vX.Y.Z` on `main`, deploy the tag, then merge the release branch back into `develop`.
+4. **Hotfixes:** cut `hotfix/*` from `main`, fix, merge into `main`, tag a patch version, deploy. Then merge it back: into the open `release/*` branch if there is one (that release carries the fix into `develop` when it is merged back), otherwise into `develop`.
+5. **Never skip the merge back.** A release or hotfix that is not merged back reappears as a bug in the next release. The work is not finished, and the branch is not deleted, until the back-merge is complete — an open PR is not enough.
+6. **Merge method: always a merge commit** (`--no-ff`), never squash or rebase-merge. This applies to `feature/*` into `develop`, and to `release/*` and `hotfix/*` into `main`, `develop` or an open release branch. It keeps each feature's commits together under one merge, and gives the long-lived branches a shared history.
+7. **Versions** follow SemVer and are decided when the release branch is cut, from the commit types merged since the last release (table below). Only `main` carries version tags.
+
+**Branch protection on `main` and `develop`, enforced by:** … <!-- e.g. GitHub branch protection: require PR, 1 approval, passing checks, no force-push; restrict who can merge into main; repository set to allow merge commits only -->
+
+**Branch names:**
+- `feature/<source-id>-<slug>` — `feature/REQ-012-guest-checkout`, `feature/KI-007-export-timeout`, `feature/<ticket>-bump-deps`
+- `release/<version>` — `release/1.3.0`
+- `hotfix/<source-id>-<slug>` — `hotfix/INC-20261103-01-db-failover`
 
 **Commits** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/):
 
@@ -131,10 +179,11 @@ Examples:
 
 **Rules**
 - One logical change per commit. KB updates go in the same PR as the code they describe.
-- The PR title follows the commit **header** format (`<type>(<scope>): <summary>`).
-- **Squash merges:** the squash commit is what lands on the main branch, and a title alone carries no footers. Before merging, make sure the final commit message includes `Refs:` and, for a breaking change, the `BREAKING CHANGE:` footer. Also mark a breaking change with `!` in the header (`feat!:`), so the signal survives even if the body is dropped.
+- The PR title follows the commit **header** format (`<type>(<scope>): <summary>`), and the repository uses it as the merge commit's message, so merges read like the rest of the history.
+- **Every commit lands on `develop`,** because features are merged, not squashed. So every commit on a `feature/*` branch follows the format above and carries the `Refs:` footer. Mark a breaking change on the commit that introduces it, with `!` in the header (`feat!:`) and a `BREAKING CHANGE:` footer.
+- **Tidy before review:** fold "wip" and "fix typo" commits into the commits they belong to (rebasing your own unshared branch is fine) so the history that lands is worth keeping.
 - A PR must pass CI, include the KB checklist, and meet the review rules in §5.1.
-- Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional on the commits that reach the main branch. A PR-title check only covers the header; it cannot verify the Refs or BREAKING CHANGE footers. -->
+- Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional run on every commit in a PR, since all of them reach `develop`. A PR-title check alone only covers the merge commit's header. -->
 - Release process: see `06-operations/environments.md`.
 
 ### 5.1 Review

@@ -13,8 +13,11 @@ last_reviewed: YYYY-MM-DD
 | Env | Purpose | URL | Deployed from | Data | Access |
 |---|---|---|---|---|---|
 | local | dev | localhost | working tree | seed | everyone |
-| staging | pre-release test | | `main` | anonymised copy | team |
-| production | live | | tag / release | real | restricted |
+| dev | integration of merged features | | `develop` | seed | team |
+| staging | release candidate test | | `release/*` (and `hotfix/*`) | anonymised copy | team |
+| production | live | | version tag on `main` | real | restricted |
+
+Branches follow Gitflow — see [conventions §5](../05-implementation/conventions.md).
 
 **How staging data is anonymised:** <!-- script / job, what fields are masked, how often refreshed, who runs it --> …
 

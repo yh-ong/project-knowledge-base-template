@@ -23,7 +23,7 @@ last_reviewed: YYYY-MM-DD   # weekly — see freshness rules in 00-index.md
 
 ## Known issues & limitations
 <!-- Things that are broken or surprising but not fixed yet. Saves people from "discovering" them again. -->
-Each row is a valid source for maintenance work. Give it the next free `KI-nnn` number and never reuse one: branches and commit footers cite it (`fix/KI-007-…`, `Refs: KI-007`). If a tracker ticket exists, link it too.
+Each row is a valid source for maintenance work. Give it the next free `KI-nnn` number and never reuse one: branches and commit footers cite it (`feature/KI-007-…`, or `hotfix/KI-007-…` for a production emergency; `Refs: KI-007`). If a tracker ticket exists, link it too.
 
 | ID | Issue | Workaround | Fixed when (verification criteria) | Ticket |
 |---|---|---|---|---|
