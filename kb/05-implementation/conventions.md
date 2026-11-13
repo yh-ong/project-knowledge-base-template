@@ -175,15 +175,24 @@ A `!` after the type (`feat!:`) or a `BREAKING CHANGE:` footer means a major bum
 Examples:
 - `feat(checkout): add guest checkout` with `Refs: REQ-018`
 - `fix(payments): retry webhook on timeout` with `Refs: INC-20261103-01`
-- `docs(kb): update runbook RUN-004`
+- `docs(kb): update runbook for webhook backlog` with `Refs: RUN-004`
 
 **Rules**
 - One logical change per commit. KB updates go in the same PR as the code they describe.
-- The PR title follows the commit **header** format (`<type>(<scope>): <summary>`), and the repository uses it as the merge commit's message, so merges read like the rest of the history.
-- **Every commit lands on `develop`,** because features are merged, not squashed. So every commit on a `feature/*` branch follows the format above and carries the `Refs:` footer. Mark a breaking change on the commit that introduces it, with `!` in the header (`feat!:`) and a `BREAKING CHANGE:` footer.
+- **Merge commits follow the format too.** The PR title is the merge commit's header (`<type>(<scope>): <summary>`); the PR description starts with the `Refs:` line and becomes its body. Set the repository to build merge messages from the PR title and description.
+- **Sync and flow merges** have fixed messages, each with the branch's `Refs:`:
+
+  | Merge | Message header | `Refs:` |
+  |---|---|---|
+  | `develop` into your feature branch, to stay current | `chore(sync): merge develop into feature/REQ-018-guest-checkout` | the feature's source ID |
+  | `release/*` into `main` | `chore(release): 1.3.0` | the roadmap items shipped, e.g. `RM-04, RM-05` |
+  | `release/*` or `hotfix/*` back into `develop` (or the open release) | `chore(sync): merge release/1.3.0 into develop` | same as the merge into `main` |
+  | `hotfix/*` into `main` | the fix itself, e.g. `fix(payments): retry webhook on timeout` | the hotfix's source ID |
+
+- **Every commit lands on `develop`,** because features are merged, not squashed. So every commit on a `feature/*`, `release/*` or `hotfix/*` branch follows the format above and carries the `Refs:` footer. Mark a breaking change on the commit that introduces it, with `!` in the header (`feat!:`) and a `BREAKING CHANGE:` footer.
 - **Tidy before review:** fold "wip" and "fix typo" commits into the commits they belong to (rebasing your own unshared branch is fine) so the history that lands is worth keeping.
 - A PR must pass CI, include the KB checklist, and meet the review rules in §5.1.
-- Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional run on every commit in a PR, since all of them reach `develop`. A PR-title check alone only covers the merge commit's header. -->
+- Enforced by: … <!-- e.g. commitlint with @commitlint/config-conventional run on every commit in a PR, merge commits included, since all of them reach `develop` and later `main`. A PR-title check alone only covers the merge commit's header. -->
 - Release process: see `06-operations/environments.md`.
 
 ### 5.1 Review

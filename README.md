@@ -148,6 +148,8 @@ If a line legitimately shows a placeholder (an instructional example), end it wi
 
 To run it in CI, copy [`.github/workflows/kb-check.yml`](.github/workflows/kb-check.yml). It runs on PRs that touch the KB, and every Monday.
 
+With Gitflow, `develop` holds the current knowledge base and `main` holds the snapshot from the last release. GitHub runs scheduled workflows on the default branch, so the Monday run switches to `develop` when that branch exists; otherwise it checks the default branch.
+
 - **During adoption** both runs use `--allow-placeholders`, so stale docs and leftover placeholders appear only as warnings in the log — the run stays green.
 - **Once the template is filled in**, follow the comments in the workflow: drop `--allow-placeholders` from the PR run, and switch the Monday run to `--strict` so a doc that went stale fails the build.
 

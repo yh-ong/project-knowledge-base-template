@@ -5,6 +5,10 @@
 # Once the template is filled in:
 #   1. PR run:        remove --allow-placeholders
 #   2. Scheduled run: replace --allow-placeholders with --strict, so stale docs fail the build
+#
+# Gitflow note: GitHub runs scheduled workflows on the default branch. The current KB lives
+# on develop (main only holds the last release), so the scheduled run switches to develop
+# when that branch exists.
 name: kb-check
 
 on:
@@ -22,6 +26,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Switch to develop (scheduled run only)
+        if: github.event_name == 'schedule'
+        run: |
+          if git ls-remote --exit-code --heads origin develop >/dev/null 2>&1; then
+            git fetch --depth 1 origin develop
+            git checkout --detach FETCH_HEAD
+            echo "Checking the develop branch."
+          else
+            echo "No develop branch found; checking the default branch."
+          fi
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
