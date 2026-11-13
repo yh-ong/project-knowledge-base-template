@@ -38,6 +38,7 @@ kb/
   04-architecture/
     overview.md                ← system context, components, data, integrations
     adr/_template-adr.md       ← copy per decision → ADR-xxxx-<slug>.md
+    threat-model.md            ← created by the security-threat-model skill when first needed
   05-implementation/
     conventions.md             ← repo map, standards (commits, architecture, clean code), testing, Definition of Done
     specs/_template-spec.md    ← technical design + task breakdown; copy → specs/SPEC-xxx-<slug>.md

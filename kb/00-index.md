@@ -25,7 +25,7 @@ last_reviewed: YYYY-MM-DD
 | 01 Context | Why does this exist? For whom? What does success look like? | [charter](01-context/charter.md), [glossary](01-context/glossary.md), [stakeholders](01-context/stakeholders.md) |
 | 02 Roadmap | What are we doing, in what order, and why that order? | [roadmap](02-roadmap/roadmap.md) |
 | 03 Requirements | What exactly must be true when a feature is done? | [index](03-requirements/index.md), [PRD template](03-requirements/_template-prd.md) |
-| 04 Architecture | How is the system shaped, and why? | [overview](04-architecture/overview.md), [ADR template](04-architecture/adr/_template-adr.md) |
+| 04 Architecture | How is the system shaped, and why? | [overview](04-architecture/overview.md), [ADR template](04-architecture/adr/_template-adr.md); `threat-model.md` once a security-relevant change needs one |
 | 05 Implementation | How do I build and change it safely? | [conventions](05-implementation/conventions.md), [spec template](05-implementation/specs/_template-spec.md) |
 | 06 Operations | How is it deployed, watched, and fixed? | [environments](06-operations/environments.md), [runbook template](06-operations/runbooks/_template-runbook.md), [postmortem template](06-operations/postmortems/_template-postmortem.md) |
 | 07 Status | Where are we right now? What shipped? | [current state](07-status/current-state.md), [changelog](07-status/changelog.md) |

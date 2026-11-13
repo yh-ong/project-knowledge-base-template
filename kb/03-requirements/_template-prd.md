@@ -57,7 +57,7 @@ links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 | Localisation | |
 | Audit / compliance | |
 
-**Threat model required** if this work changes authentication, authorisation, external entry points, money movement, or sensitive data. Link it in `links`.
+**Threat model required** if this work changes authentication, authorisation, external entry points, money movement, or sensitive data. It has two stages, described in `05-implementation/conventions.md` §5.2: a design-stage version before this REQ is `ready`, reconciled with the finished code before the PR is approved. Link it in `links`.
 
 ## 8. Data & integrations
 <!-- New data stored, events emitted/consumed, external APIs touched. Point to the machine-readable contract (OpenAPI, protobuf, event schema) instead of copying it. -->
@@ -102,7 +102,7 @@ links: []                # SPEC-xxx, ADR-xxxx, threat model, designs, tickets
 - [ ] Every `must` functional requirement maps to at least one AC
 - [ ] Every edge case maps to an AC or is explicitly out of scope
 - [ ] NFRs quantified or marked `N/A` with a reason
-- [ ] Threat model linked, if required (§7)
+- [ ] Design-stage threat model linked, if required (§7): proposed trust boundaries, threats and planned mitigations
 - [ ] Design reference agreed by a named owner and covers every screen and applicable state (§9), or "N/A — no UI"
 - [ ] Dependencies on other teams/systems identified
 - [ ] Rollout, success metric, and rollback trigger defined

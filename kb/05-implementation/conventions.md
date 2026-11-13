@@ -42,7 +42,7 @@ Day-to-day commands (install, run, test, lint) are canonical in [`AGENTS.md §3`
 | Architecture | Clean (layered) architecture — rules in §3.2 | | import-boundary lint: … |
 | API design | … (REST + OpenAPI 3 / GraphQL / gRPC) | | contract lint: … |
 | Configuration | [Twelve-Factor](https://12factor.net/config): config from the environment, never in code | | … |
-| Security | [OWASP Top 10](https://owasp.org/www-project-top-ten/) as the review baseline | | dependency + secret scanning: … |
+| Security | [OWASP Top 10](https://owasp.org/www-project-top-ten/) as the review baseline | threat model for security-relevant changes, see §5.2 | dependency + secret scanning: … |
 | Accessibility | WCAG 2.2 AA | see `08-design/design-system.md` §8 | … |
 
 ### 3.2 Architecture rules
@@ -205,10 +205,21 @@ Examples:
 - **Record** the approval in the PR or a linked decision thread. A material change after approval needs re-review by the affected approver.
 - **Approving a PR does not authorise running anything in production** — that follows the [change approval policy](../06-operations/environments.md#10-change-approval-policy).
 
+### 5.2 Security threat model
+<!-- AI-assisted, and deliberately light: one skill, run only when a change is security-relevant. -->
+- **Which changes:** any change that touches authentication, authorisation, external entry points, money movement, or sensitive data — the same triggers as the REQ template (§7). Also once before the first release. Not for every feature.
+- **Stage 1 — design, before the REQ is marked `ready`:** write the proposed trust boundaries, threats and planned mitigations into the threat model, clearly marked as *proposed* (the code doesn't exist yet, so the skill has nothing to read). This is what the REQ's ready-to-build checklist asks for.
+- **Stage 2 — implementation, before the PR is approved:** run the skill against the implemented paths, then reconcile its report with stage 1: confirm each planned mitigation exists, add threats it found, and remove the *proposed* marks.
+- **How to run the skill:** have your coding agent run the [`security-threat-model`](https://github.com/openai/skills/tree/main/skills/.curated/security-threat-model) skill (OpenAI, Apache-2.0). It only runs when asked explicitly, so say: *"Threat model this codebase, focusing on* `<paths this change touches>`*."* It asks 1–3 questions first; answer them from the REQ and the stage 1 notes.
+- **Where the result goes:** the skill writes `<repo-name>-threat-model.md`. Keep one living copy at `kb/04-architecture/threat-model.md` — update it, don't create one per feature — add the standard front-matter, and link it from the REQ.
+- **What happens with it:** it is AI review, so it is advisory (§5.1). A reviewer competent in security reads it and decides. A `critical` or `high` threat with no mitigation blocks approval until it is mitigated, or a named human accepts the risk in writing in the PR. Anything left open becomes a `KI-nnn` row in `current-state.md`.
+- **What it is not:** a vulnerability scan. Dependency and secret scanning stay in CI (§3.1).
+
 ## 6. Definition of Done
 - [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue `KI-nnn`). Link the test or screenshot.
 - [ ] UI changes compared with the design reference and viewports recorded in the REQ or the maintenance source, including each applicable state and keyboard use (or N/A — no UI)
 - [ ] Tests added/updated and passing
+- [ ] Threat model reconciled with the finished code if the change is security-relevant (§5.2 stage 2), with its critical and high threats mitigated or accepted in writing (or N/A)
 - [ ] Observability: logs/metrics for the new path
 - [ ] KB updated (see AGENTS.md §6)
 - [ ] Ops informed if config, infra, or alerts changed

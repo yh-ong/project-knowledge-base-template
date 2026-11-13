@@ -64,6 +64,7 @@ When your change affects any of these, update the doc **in the same change**:
 | Behaviour a user can see | the REQ's status (if there is a REQ), `kb/07-status/changelog.md` |
 | A design choice that others will depend on | new ADR in `kb/04-architecture/adr/` |
 | Components, integrations, data model | `kb/04-architecture/overview.md` |
+| Auth, permissions, entry points, money movement, sensitive data | `kb/04-architecture/threat-model.md` — how: `conventions.md` §5.2 |
 | UI components, tokens, style rules | `kb/08-design/design-system.md` |
 | Commands, generated paths | §3 above |
 | Folder layout, coding conventions | `kb/05-implementation/conventions.md` |
