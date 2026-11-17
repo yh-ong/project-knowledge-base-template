@@ -95,6 +95,9 @@ flowchart LR
 | Unit | | | every PR |
 | Integration | | | changes to DB / external calls |
 | E2E | | | user-facing flows in REQ acceptance criteria |
+| Manual | what can't reasonably be automated | the change's verification plan | release candidates; anything a test can't judge (look, feel, wording) |
+
+**One verification plan per change.** It lives in the spec (§7), or in the REQ or maintenance source when there is no spec, or in a linked test-management tool. Link automated tests rather than transcribing them, and keep reusable manual procedures with the plan. **Results don't go in the plan:** what was actually run for a release is recorded in the release or hotfix PR (format in `06-operations/environments.md` §2).
 
 ## 5. Branching, commits, PRs, release
 
@@ -134,8 +137,8 @@ gitGraph
 
 1. **`main` and `develop` are protected.** No direct pushes; every change arrives by PR with passing CI and an approval (§5.1). Never force-push either.
 2. **Features:** cut `feature/*` from `develop`, one branch per source ID. Update it from `develop` at least daily and keep it short — a branch that lives for weeks is where merge pain comes from. Unfinished work that must merge goes behind a feature flag. Delete the branch after merging.
-3. **Releases:** when `develop` holds everything for the release, cut `release/<version>`. From then on only release fixes, the version bump and the changelog go on it; new features keep going to `develop` for the next release. When it passes on staging, merge it into `main`, tag `vX.Y.Z` on `main`, deploy the tag, then merge the release branch back into `develop`.
-4. **Hotfixes:** cut `hotfix/*` from `main`, fix, merge into `main`, tag a patch version, deploy. Then merge it back: into the open `release/*` branch if there is one (that release carries the fix into `develop` when it is merged back), otherwise into `develop`.
+3. **Releases:** when `develop` holds everything for the release, cut `release/<version>`. From then on only release fixes, the version bump and the changelog go on it; new features keep going to `develop` for the next release. When the candidate passes the required staging checks and its verification record has been reviewed (§5.1; record format in `06-operations/environments.md` §2), merge it into `main`, tag `vX.Y.Z` on `main`, deploy the tag, then merge the release branch back into `develop`.
+4. **Hotfixes:** cut `hotfix/*` from `main`, fix, record and review the candidate's verification the same way, merge into `main`, tag a patch version, deploy. Then merge it back: into the open `release/*` branch if there is one (that release carries the fix into `develop` when it is merged back), otherwise into `develop`.
 5. **Never skip the merge back.** A release or hotfix that is not merged back reappears as a bug in the next release. The work is not finished, and the branch is not deleted, until the back-merge is complete — an open PR is not enough.
 6. **Merge method: always a merge commit** (`--no-ff`), never squash or rebase-merge. This applies to `feature/*` into `develop`, and to `release/*` and `hotfix/*` into `main`, `develop` or an open release branch. It keeps each feature's commits together under one merge, and gives the long-lived branches a shared history.
 7. **Versions** follow SemVer and are decided when the release branch is cut, from the commit types merged since the last release (table below). Only `main` carries version tags.
@@ -218,7 +221,7 @@ Examples:
 ## 6. Definition of Done
 - [ ] Acceptance criteria in the REQ verified — or, for maintenance work with no REQ, the verification criteria recorded in its source (ticket / INC / known issue `KI-nnn`). Link the test or screenshot.
 - [ ] UI changes compared with the design reference and viewports recorded in the REQ or the maintenance source, including each applicable state and keyboard use (or N/A — no UI)
-- [ ] Tests added/updated and passing
+- [ ] Tests and manual procedures updated when acceptance or verification criteria change; applicable checks passing, with execution evidence linked
 - [ ] Threat model reconciled with the finished code if the change is security-relevant (§5.2 stage 2), with its critical and high threats mitigated or accepted in writing (or N/A)
 - [ ] Observability: logs/metrics for the new path
 - [ ] KB updated (see AGENTS.md §6)

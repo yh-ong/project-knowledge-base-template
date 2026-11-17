@@ -48,10 +48,16 @@ links: []                # ADR-xxxx, PRs
 ## 6. Security & privacy
 <!-- New data collected? Access control changes? Threats considered? -->
 
-## 7. Test plan
-| AC (from REQ, or verification criterion from the maintenance source) | How verified | Test location |
+## 7. Verification plan
+<!-- The one verification plan for this change (or a link to it, if it lives in a test-management tool). Reference the expected behaviour by its criterion; don't restate it. Link automated tests; don't transcribe them. -->
+| Criterion (AC from the REQ, or verification criterion from the maintenance source) | Method | Test / procedure link |
 |---|---|---|
-| AC1 | unit / integration / e2e / manual | |
+| REQ-000 AC1 | unit / integration / e2e / manual | |
+
+**Manual checks** <!-- only where the criterion alone can't guide a repeatable check. Cite one as SPEC-000#M1. Delete the table if there are none. -->
+| Check | Criteria covered | Preconditions / test data | Steps | Expected outcome (reference) |
+|---|---|---|---|---|
+| M1 | | | | |
 
 ## 8. Task breakdown
 <!-- Small, independently mergeable steps. Good for humans and for handing to AI agents one at a time.

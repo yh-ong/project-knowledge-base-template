@@ -22,5 +22,7 @@ last_reviewed: YYYY-MM-DD
 - …
 
 ## [0.1.0] — YYYY-MM-DD
+<!-- Each release links its verification record: -->
+Verification: <!-- link to the release PR --> …
 ### Added
 - Initial knowledge base.

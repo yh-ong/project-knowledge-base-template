@@ -38,6 +38,8 @@ last_reviewed: YYYY-MM-DD
 - **Who is doing what this week** → your issue tracker (link: `…`). The KB holds IDs and links, not task-level churn.
 - **Day-to-day development commands** (install, run, test, lint) → `AGENTS.md §3` only. Operational commands live in the runbook that uses them.
 - **Visual design values** (colours, spacing, type) → the design tokens in code; **screens** → the design files. `design-system.md` links to both.
+- **Verification procedures** → the executable tests, plus the change's one verification plan (spec §7, or the REQ / maintenance source) for manual checks.
+- **Release verification results** → the release or hotfix PR (or its linked run record), linked from the release's entry in `07-status/changelog.md`.
 - **API contracts** → the machine-readable files (OpenAPI / protobuf / event schemas). Their location is recorded once, in [architecture overview §4](04-architecture/overview.md); other docs link to them.
 
 ## File naming

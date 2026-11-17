@@ -14,6 +14,7 @@ Most projects lose speed and direction for the same reasons:
 | Features look inconsistent, or get built before anyone knows how they should look | `kb/08-design/design-system.md` + a "UX & design" section in every REQ, required before it is `ready` |
 | Everyone branches, commits, structures and styles code their own way | `conventions.md` adopts named standards (Gitflow branching, Conventional Commits, SemVer, clean-architecture rules) and names the tool that enforces each |
 | "Reviewed" can mean a bot comment, and anyone can mark a doc approved | `stakeholders.md` names who decides; `conventions.md` §5.1 requires a named human approver and treats AI review as advisory |
+| "Passes on staging" means something different to everyone | One verification plan per change, with manual checks written down; a release verification record in every release and hotfix PR |
 | Decisions get re-argued | ADRs record *why*, so nobody (human or AI) silently reverses them |
 | Ops learns about features at release time | Spec template has a required "Operational impact" section; runbooks live next to the code |
 | Docs rot | Freshness rules per document type, a KB update in the Definition of Done, and an optional CI check |
@@ -118,6 +119,7 @@ flowchart LR
 - [ ] Spec / ADR updated if the design changed: <!-- link -->
 - [ ] Ops docs updated if config, deploy, migrations, alerts, or runbooks changed: <!-- link -->
 - [ ] `changelog.md` updated (user- or ops-visible change)
+- [ ] Release / hotfix PR only: release verification record completed or linked (`environments.md` §2)
 - [ ] N/A — no knowledge change (explain):
 ```
 
