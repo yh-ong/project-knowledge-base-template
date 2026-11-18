@@ -41,9 +41,10 @@ Write this in every release and hotfix PR (or link the run record in your test-m
 | | | | | |
 
 - Decision: go / no-go — by (named human), when; accepted risks and why
-- After deployment: deployed tag or artifact; production verification evidence
+- After deployment: pending <!-- replace after deploy: deployed tag or artifact; production verification evidence -->
 ```
 
+- **Two stages:** everything down to the decision must be complete before the PR is merged. "After deployment" stays `pending` until the release is deployed; then the release owner (the person who gave the go, unless another is named) adds the deployed tag and the production evidence to the same record.
 - **Who decides:** the PR's approval may serve as the go decision when it explicitly covers this record; the one-person fallback in `conventions.md` §5.1 applies. An AI agent can run checks and fill in results, but cannot give the go.
 - **What blocks:** a failed, blocked or skipped *required* check blocks the release unless the responsible named human records the exception and the reason. Required CI checks are never waived this way.
 - **A failure is not automatically a defect.** Record its cause. For a confirmed defect, link the ticket or `KI-nnn`; don't open a second one for a repeat failure.

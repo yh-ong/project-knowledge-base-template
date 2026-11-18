@@ -119,7 +119,7 @@ flowchart LR
 - [ ] Spec / ADR updated if the design changed: <!-- link -->
 - [ ] Ops docs updated if config, deploy, migrations, alerts, or runbooks changed: <!-- link -->
 - [ ] `changelog.md` updated (user- or ops-visible change)
-- [ ] Release / hotfix PR only: release verification record completed or linked (`environments.md` §2)
+- [ ] Release / hotfix PR only: release verification record in the PR or linked, with pre-deployment checks done and the go decision recorded (`environments.md` §2)
 - [ ] N/A — no knowledge change (explain):
 ```
 
